@@ -254,13 +254,20 @@
           >
             Coba Lagi
           </button>
+          <button
+            type="button"
+            onclick="activateDemoMode()"
+            class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer"
+          >
+            Buka Mode Demo (Offline)
+          </button>
           <a
-            href="https://script.google.com/macros/s/AKfycby45JpHe2yDd_wtkbexlroErRg7v85J9rLc2bEZwmB8iGaZf36-SS8sCjpQneZuFy1WIg/exec"
+            href="https://script.google.com/macros/s/AKfycby45JpHe2yDd_wtkbexlroErRg7v85J9rLc2bEZwmB8iGaZf36-SS8sCjpQneZuFy1WIg/exec?action=getInitialData"
             target="_blank"
             rel="noopener noreferrer"
             class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-slate-800 border border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-slate-700"
           >
-            Buka Link Web App Langsung
+            Uji Endpoint API di Tab Baru
           </a>
         </div>
       </div>
@@ -484,6 +491,7 @@
     // State Aplikasi
     const state = {
       isAdmin: false,
+      isDemoMode: false,
       settings: {
         schoolName: 'SMAN 13 GARUT',
         academicYear: 'TA 2026/2027 • Semester Ganjil',
@@ -559,6 +567,11 @@
           'hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300';
         el.connectionDot.className = 'w-2 h-2 rounded-full bg-emerald-500';
         el.connectionText.textContent = 'Terhubung';
+      } else if (status === 'demo') {
+        el.connectionBadge.className =
+          'hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-300';
+        el.connectionDot.className = 'w-2 h-2 rounded-full bg-indigo-500';
+        el.connectionText.textContent = 'Mode Demo';
       } else if (status === 'error') {
         el.connectionBadge.className =
           'hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300';
@@ -607,18 +620,63 @@
       }
     }
 
-    async function apiGet(actiaon) {
-      const response = await fetch(`${GAS_WEB_APP_URL}?action=${encodeURIComponent(action)}`, {
-        method: 'GET',
-        redirect: 'follow'
+    /**
+     * Fallback JSONP untuk GET jika browser/sandbox memblokir CORS pada fetch().
+     */
+    function apiGetJsonp(action) {
+      return new Promise((resolve, reject) => {
+        const callbackName = '__gasCb_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+        const script = document.createElement('script');
+        const timeout = setTimeout(() => {
+          cleanup();
+          reject(new Error('Timeout menghubungi server Google Apps Script.'));
+        }, 12000);
+
+        function cleanup() {
+          clearTimeout(timeout);
+          delete window[callbackName];
+          if (script.parentNode) script.parentNode.removeChild(script);
+        }
+
+        window[callbackName] = function (data) {
+          cleanup();
+          resolve(data);
+        };
+
+        script.onerror = function () {
+          cleanup();
+          reject(new Error('Koneksi diblokir atau endpoint Google Apps Script belum publik.'));
+        };
+
+        script.src = `${GAS_WEB_APP_URL}?action=${encodeURIComponent(action)}&callback=${callbackName}&_t=${Date.now()}`;
+        document.body.appendChild(script);
       });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return parseJsonSafe(response);
+    }
+
+    async function apiGet(action) {
+      try {
+        const response = await fetch(`${GAS_WEB_APP_URL}?action=${encodeURIComponent(action)}`, {
+          method: 'GET',
+          mode: 'cors',
+          credentials: 'omit',
+          redirect: 'follow'
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return await parseJsonSafe(response);
+      } catch (fetchErr) {
+        // Jika fetch gagal (CORS/redirect di preview atau GAS), coba fallback JSONP
+        if (fetchErr instanceof TypeError || /Failed to fetch/i.test(fetchErr.message)) {
+          return await apiGetJsonp(action);
+        }
+        throw fetchErr;
+      }
     }
 
     async function apiPost(action, payload = {}) {
       const response = await fetch(GAS_WEB_APP_URL, {
         method: 'POST',
+        mode: 'cors',
+        credentials: 'omit',
         redirect: 'follow',
         headers: {
           'Content-Type': 'text/plain;charset=utf-8'
@@ -631,7 +689,33 @@
 
     /* ==================== LOAD & RENDER DATA ==================== */
 
+    function activateDemoMode() {
+      state.isDemoMode = true;
+      state.settings = {
+        schoolName: 'SMAN 13 GARUT',
+        academicYear: 'TA 2026/2027 • Semester Ganjil',
+        defaultKkm: '75',
+        adminPin: 'admin123',
+        announcement:
+          'Mode Demo Offline aktif. Untuk menyimpan data permanen ke Spreadsheet & Drive, deploy Code.gs sebagai versi baru dengan akses "Siapa saja (Anyone)".'
+      };
+      state.records = [
+        { id: 'DEMO-1', nisn: '0081234501', nama: 'Ahmad Fauzan', kelas: 'XI IPA 1', mapel: 'Matematika - Matriks', nilai: 88, kkm: 75, status: 'TUNTAS', catatan: 'Sangat baik, lanjutkan!', linkDrive: '' },
+        { id: 'DEMO-2', nisn: '0081234502', nama: 'Siti Rahmawati', kelas: 'XI IPA 1', mapel: 'Matematika - Matriks', nilai: 68, kkm: 75, status: 'BELUM TUNTAS', catatan: 'Perlu remedial soal nomor 3-5', linkDrive: '' },
+        { id: 'DEMO-3', nisn: '0081234503', nama: 'Budi Santoso', kelas: 'XI IPS 2', mapel: 'Ekonomi - Pendapatan Nasional', nilai: 78, kkm: 75, status: 'TUNTAS', catatan: 'Tuntas sesuai target', linkDrive: '' }
+      ];
+      el.errorState.classList.add('hidden');
+      el.loadingState.classList.add('hidden');
+      applySettingsToUI();
+      populateKelasFilter();
+      updateStats();
+      renderList();
+      setConnectionStatus('demo');
+      showToast('Mode Demo aktif (data contoh lokal).', 'info');
+    }
+
     async function loadInitialData() {
+      state.isDemoMode = false;
       setConnectionStatus('loading');
       el.refreshIcon.classList.add('animate-spin');
       el.errorState.classList.add('hidden');
@@ -656,11 +740,15 @@
         renderList();
         setConnectionStatus('connected');
       } catch (err) {
-        console.error(err);
+        console.error('Detail error koneksi GAS:', err);
         setConnectionStatus('error');
         el.loadingState.classList.add('hidden');
         el.errorState.classList.remove('hidden');
-        el.errorDetail.textContent = err.message;
+        el.errorDetail.textContent =
+          'Browser tidak dapat mengambil data dari Google Apps Script (CORS / akses ditolak). ' +
+          'Pastikan: (1) Code.gs terbaru sudah di-deploy sebagai "Versi baru" dengan akses "Siapa saja (Anyone)", ' +
+          'dan (2) halaman dibuka langsung lewat GitHub Pages (bukan sandbox Preview terbatas). ' +
+          'Anda juga dapat mengklik "Buka Mode Demo (Offline)" untuk melihat tampilan aplikasi.';
       } finally {
         el.loadingState.classList.add('hidden');
         el.refreshIcon.classList.remove('animate-spin');
@@ -929,6 +1017,22 @@
       };
 
       try {
+        if (state.isDemoMode) {
+          const status = payload.nilai >= payload.kkm ? 'TUNTAS' : 'BELUM TUNTAS';
+          if (payload.id) {
+            const idx = state.records.findIndex((r) => r.id === payload.id);
+            if (idx !== -1) state.records[idx] = { ...state.records[idx], ...payload, status };
+          } else {
+            state.records.unshift({ ...payload, id: 'DEMO-' + Date.now(), status, linkDrive: '' });
+          }
+          closeModal('modal-nilai');
+          populateKelasFilter();
+          updateStats();
+          renderList();
+          showToast('Tersimpan di Mode Demo (lokal).', 'success');
+          return;
+        }
+
         const res = await apiPost('saveNilaiSiswa', { data: payload });
         if (!res.success) throw new Error(res.message);
         closeModal('modal-nilai');
@@ -958,6 +1062,16 @@
       btn.textContent = 'Menghapus...';
 
       try {
+        if (state.isDemoMode) {
+          state.records = state.records.filter((r) => r.id !== state.pendingDeleteId);
+          closeModal('modal-delete');
+          populateKelasFilter();
+          updateStats();
+          renderList();
+          showToast('Data dihapus di Mode Demo (lokal).', 'success');
+          return;
+        }
+
         const res = await apiPost('deleteNilaiSiswa', { id: state.pendingDeleteId });
         if (!res.success) throw new Error(res.message);
         closeModal('modal-delete');
@@ -998,6 +1112,14 @@
       };
 
       try {
+        if (state.isDemoMode) {
+          state.settings = { ...state.settings, ...newSettings };
+          applySettingsToUI();
+          closeModal('modal-settings');
+          showToast('Pengaturan diperbarui di Mode Demo (lokal).', 'success');
+          return;
+        }
+
         const res = await apiPost('updatePengaturan', { data: newSettings });
         if (!res.success) throw new Error(res.message);
         closeModal('modal-settings');
@@ -1046,6 +1168,12 @@
       btn.textContent = 'Mengunggah...';
 
       try {
+        if (state.isDemoMode) {
+          closeModal('modal-upload');
+          showToast('Simulasi upload berhasil (Mode Demo tidak mengunggah ke Drive).', 'info');
+          return;
+        }
+
         const base64Data = await new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = () => {
