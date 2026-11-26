@@ -45,7 +45,7 @@
       },
     };
 
-    // Inisialisasi tema Gelap/Terang sebelum halaman dirender agar tidak berkedip
+    // Inisialisasi tema Gelap/Terang sebelum halaman dirender
     (function () {
       try {
         const saved = localStorage.getItem('sman13_theme');
@@ -98,11 +98,9 @@
           aria-label="Ganti Mode Gelap / Terang"
           class="p-2 sm:p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer"
         >
-          <!-- Ikon Matahari (tampil di dark mode) -->
           <svg class="hidden dark:block w-4 h-4 sm:w-5 sm:h-5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
           </svg>
-          <!-- Ikon Bulan (tampil di light mode) -->
           <svg class="block dark:hidden w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
           </svg>
@@ -124,14 +122,12 @@
 
   <!-- ==================== HERO BANNER DINAMIS & STATISTIK ==================== -->
   <section class="relative overflow-hidden bg-slate-950 text-white">
-    <!-- Latar Gradien & Ambient Orbs Beranimasi -->
     <div class="absolute inset-0 bg-gradient-to-br from-indigo-950 via-blue-950 to-slate-950"></div>
     <div class="pointer-events-none absolute -top-24 -left-24 w-80 h-80 rounded-full bg-indigo-500/25 blur-3xl animate-float-slow"></div>
     <div class="pointer-events-none absolute top-1/2 -right-24 w-96 h-96 rounded-full bg-cyan-500/20 blur-3xl animate-float-slower"></div>
     <div class="pointer-events-none absolute -bottom-24 left-1/3 w-72 h-72 rounded-full bg-blue-600/20 blur-3xl animate-float-slow"></div>
 
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-6">
-      <!-- Baris Judul & Tombol Sinkronisasi -->
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-5">
         <div class="space-y-2.5">
           <div class="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold bg-white/10 backdrop-blur-md border border-white/15 text-cyan-200 rounded-full">
@@ -146,7 +142,6 @@
           </p>
         </div>
 
-        <!-- Tombol Muat Ulang -->
         <button
           id="btn-refresh"
           type="button"
@@ -176,7 +171,6 @@
 
       <!-- Kartu Statistik Glassmorphism -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <!-- Total Data -->
         <div class="group bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/15 rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-950/30">
           <div class="flex items-center justify-between">
             <p class="text-xs font-semibold text-indigo-200">Total Data Nilai</p>
@@ -190,7 +184,6 @@
           <p class="text-[11px] text-indigo-200/70 mt-1">Tercatat di Spreadsheet</p>
         </div>
 
-        <!-- Tuntas -->
         <div class="group bg-emerald-500/15 hover:bg-emerald-500/20 backdrop-blur-md border border-emerald-400/25 rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-950/30">
           <div class="flex items-center justify-between">
             <p class="text-xs font-semibold text-emerald-200">Tuntas</p>
@@ -204,7 +197,6 @@
           <p class="text-[11px] text-emerald-200/70 mt-1">Memenuhi standar KKM</p>
         </div>
 
-        <!-- Belum Tuntas -->
         <div class="group bg-rose-500/15 hover:bg-rose-500/20 backdrop-blur-md border border-rose-400/25 rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-rose-950/30">
           <div class="flex items-center justify-between">
             <p class="text-xs font-semibold text-rose-200">Belum Tuntas</p>
@@ -218,7 +210,6 @@
           <p class="text-[11px] text-rose-200/70 mt-1">Perlu perbaikan / remedial</p>
         </div>
 
-        <!-- Persentase Tuntas + Progress Bar -->
         <div class="group bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/15 rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-cyan-950/30">
           <div class="flex items-center justify-between">
             <p class="text-xs font-semibold text-cyan-200">Persentase Tuntas</p>
@@ -275,7 +266,7 @@
           <button
             id="btn-open-admins"
             type="button"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-teal-600 hover:bg-teal-700 text-white shadow-sm transition-all active:scale-95 cursor-pointer"
+            class="hidden inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-teal-600 hover:bg-teal-700 text-white shadow-sm transition-all active:scale-95 cursor-pointer"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -493,6 +484,12 @@
       <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
         Masuk menggunakan akun Guru/Admin Anda untuk mengelola nilai siswa dan pengaturan portal.
       </p>
+
+      <!-- Indikator Akun Terdeteksi dari Spreadsheet -->
+      <div id="login-account-status" class="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-400">
+        Memeriksa daftar akun guru dari Spreadsheet...
+      </div>
+
       <form id="form-login" class="space-y-3.5">
         <div>
           <label for="input-username" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Username Guru / Admin <span class="font-normal text-slate-400">(opsional jika PIN unik)</span></label>
@@ -500,18 +497,37 @@
             type="text"
             id="input-username"
             placeholder="Contoh: admin"
+            autocomplete="username"
             class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
         <div>
           <label for="input-pin" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">PIN Akses *</label>
-          <input
-            type="password"
-            id="input-pin"
-            required
-            placeholder="Masukkan PIN (default: admin123)"
-            class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
+          <div class="relative">
+            <input
+              type="password"
+              id="input-pin"
+              required
+              placeholder="Masukkan PIN (default: admin123)"
+              autocomplete="current-password"
+              class="w-full pl-4 pr-11 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <button
+              type="button"
+              id="btn-toggle-pin"
+              title="Tampilkan / Sembunyikan PIN"
+              aria-label="Tampilkan / Sembunyikan PIN"
+              class="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+            >
+              <svg id="icon-eye-show" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <svg id="icon-eye-hide" class="hidden w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+              </svg>
+            </button>
+          </div>
         </div>
         <div class="flex justify-end gap-2 pt-1">
           <button type="button" data-close="modal-login" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 cursor-pointer">Batal</button>
@@ -765,9 +781,11 @@
       btnAdminLabel: document.getElementById('btn-admin-label'),
       btnThemeToggle: document.getElementById('btn-theme-toggle'),
       adminToolbar: document.getElementById('admin-toolbar'),
+      btnOpenAdmins: document.getElementById('btn-open-admins'),
       adminActiveUser: document.getElementById('admin-active-user'),
       adminListContainer: document.getElementById('admin-list-container'),
       adminCountBadge: document.getElementById('admin-count-badge'),
+      loginAccountStatus: document.getElementById('login-account-status'),
       linkSpreadsheet: document.getElementById('link-spreadsheet'),
       linkDriveFolder: document.getElementById('link-drive-folder'),
       statTotal: document.getElementById('stat-total'),
@@ -829,12 +847,9 @@
       toastTimer = setTimeout(() => {
         el.toast.classList.remove('opacity-100', 'translate-y-0');
         el.toast.classList.add('opacity-0', 'translate-y-2', 'pointer-events-none');
-      }, 3600);
+      }, 4000);
     }
 
-    /**
-     * Animasi hitungan angka halus pada kartu statistik.
-     */
     function animateCounter(element, target, suffix = '') {
       const duration = 550;
       const startTime = performance.now();
@@ -886,6 +901,14 @@
     function getInitials(name) {
       const parts = String(name || 'S').trim().split(/\s+/);
       return (parts[0]?.[0] || '') + (parts[1]?.[0] || parts[0]?.[1] || '');
+    }
+
+    function isSuperAdmin() {
+      return Boolean(
+        state.isAdmin &&
+          state.currentAdmin &&
+          String(state.currentAdmin.role || '').trim().toUpperCase() === 'SUPER_ADMIN'
+      );
     }
 
     function openModal(id) {
@@ -965,6 +988,12 @@
       const actor = state.currentAdmin
         ? `${state.currentAdmin.nama} (${state.currentAdmin.username})`
         : 'GURU';
+      const auth = state.currentAdmin
+        ? {
+            username: String(state.currentAdmin.username || '').trim().toLowerCase(),
+            pin: String(state.currentAdmin.pin || '').trim()
+          }
+        : null;
       const response = await fetch(GAS_WEB_APP_URL, {
         method: 'POST',
         mode: 'cors',
@@ -973,7 +1002,7 @@
         headers: {
           'Content-Type': 'text/plain;charset=utf-8'
         },
-        body: JSON.stringify({ action, actor, ...payload })
+        body: JSON.stringify({ action, actor, auth, ...payload })
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return parseJsonSafe(response);
@@ -1008,6 +1037,7 @@
       populateKelasFilter();
       updateStats();
       renderList();
+      renderAdminList();
       setConnectionStatus('demo');
       showToast('Mode Demo aktif. Coba ketik NISN: 0081234501', 'info');
     }
@@ -1106,7 +1136,7 @@
       const kelas = el.filterKelas.value;
       const status = el.filterStatus.value;
 
-      // Mode Siswa (bukan Admin): wajib memasukkan NISN lengkap, hanya tampilkan data milik NISN tersebut
+      // Mode Siswa: wajib memasukkan NISN lengkap, hanya tampilkan data milik NISN tersebut
       if (!state.isAdmin) {
         if (!q) return [];
         return state.records.filter((r) => {
@@ -1299,20 +1329,46 @@
 
     /* ==================== ADMIN LOGIN / LOGOUT ==================== */
 
+    function updateLoginAccountStatus() {
+      if (!el.loginAccountStatus) return;
+      if (state.admins.length > 0) {
+        el.loginAccountStatus.innerHTML =
+          `<span class="font-semibold text-emerald-700 dark:text-emerald-400">● ${state.admins.length} akun Guru/Admin terbaca</span> dari sheet <code>Admin_Guru</code>.`;
+      } else {
+        el.loginAccountStatus.innerHTML =
+          `<span class="font-semibold text-amber-700 dark:text-amber-400">● Menggunakan PIN bawaan</span> (username: <code>admin</code>). Jika Anda sudah menambah akun di sheet <code>Admin_Guru</code>, pastikan <code>Code.gs</code> sudah di-deploy sebagai <strong>Versi baru</strong>.`;
+      }
+    }
+
+    // Tombol lihat / sembunyikan PIN di modal login
+    document.getElementById('btn-toggle-pin').addEventListener('click', () => {
+      const pinInput = document.getElementById('input-pin');
+      const isPassword = pinInput.type === 'password';
+      pinInput.type = isPassword ? 'text' : 'password';
+      document.getElementById('icon-eye-show').classList.toggle('hidden', isPassword);
+      document.getElementById('icon-eye-hide').classList.toggle('hidden', !isPassword);
+    });
+
     el.btnAdminToggle.addEventListener('click', () => {
       if (state.isAdmin) {
         state.isAdmin = false;
         state.currentAdmin = null;
         el.adminToolbar.classList.add('hidden');
+        el.btnOpenAdmins.classList.add('hidden');
         el.btnAdminLabel.textContent = 'Panel Guru';
         el.searchInput.placeholder = 'Masukkan NISN Anda secara lengkap untuk melihat nilai...';
         renderList();
         showToast('Keluar dari Panel Guru.', 'info');
       } else {
         document.getElementById('input-username').value = '';
-        document.getElementById('input-pin').value = '';
+        const pinInput = document.getElementById('input-pin');
+        pinInput.value = '';
+        pinInput.type = 'password';
+        document.getElementById('icon-eye-show').classList.remove('hidden');
+        document.getElementById('icon-eye-hide').classList.add('hidden');
+        updateLoginAccountStatus();
         openModal('modal-login');
-        setTimeout(() => document.getElementById('input-pin').focus(), 100);
+        setTimeout(() => document.getElementById('input-username').focus(), 100);
       }
     });
 
@@ -1332,18 +1388,18 @@
               String(a.pin || '').trim() === enteredPin
           );
         } else {
-          // Jika username dikosongkan, cocokkan PIN di daftar admin/guru
           matchedAdmin = state.admins.find((a) => String(a.pin || '').trim() === enteredPin);
         }
       }
 
-      // Fallback ke PIN utama di sheet Pengaturan jika belum ada di sheet Admin_Guru
+      // Fallback ke PIN utama di sheet Pengaturan
       if (!matchedAdmin && (!enteredUser || enteredUser === 'admin') && enteredPin === fallbackPin) {
         matchedAdmin = {
           id: 'ADM-DEFAULT',
           nama: 'Administrator Utama',
           mapel: 'Admin Portal',
           username: 'admin',
+          pin: enteredPin,
           role: 'SUPER_ADMIN'
         };
       }
@@ -1353,14 +1409,21 @@
         state.currentAdmin = matchedAdmin;
         closeModal('modal-login');
         el.adminToolbar.classList.remove('hidden');
-        el.btnAdminLabel.textContent = 'Keluar Admin';
-        el.adminActiveUser.textContent = `Masuk sebagai: ${matchedAdmin.nama}${matchedAdmin.mapel ? ' (' + matchedAdmin.mapel + ')' : ''} • Anda dapat mengelola nilai, akun guru, dan pengaturan portal.`;
+        el.btnOpenAdmins.classList.toggle('hidden', !isSuperAdmin());
+        el.btnAdminLabel.textContent = isSuperAdmin() ? 'Keluar Admin' : 'Keluar Guru';
+        el.adminActiveUser.textContent = isSuperAdmin()
+          ? `Masuk sebagai: ${matchedAdmin.nama} (Super Admin) • Anda memiliki akses penuh untuk mengelola nilai, akun guru/admin, dan pengaturan portal.`
+          : `Masuk sebagai: ${matchedAdmin.nama}${matchedAdmin.mapel ? ' (' + matchedAdmin.mapel + ')' : ''} (Guru) • Anda dapat mengelola data nilai siswa.`;
         el.searchInput.placeholder = 'Cari Nama Siswa, NISN, atau Mapel/Tugas...';
         renderList();
         renderAdminList();
         showToast(`Selamat datang, ${matchedAdmin.nama}!`, 'success');
       } else {
-        showToast('Username atau PIN salah. Silakan coba lagi.', 'error');
+        if (state.admins.length === 0 && enteredUser && enteredUser !== 'admin') {
+          showToast('Akun belum terbaca. Masuk dulu pakai admin / admin123 atau deploy ulang Code.gs versi baru.', 'error');
+        } else {
+          showToast('Username atau PIN salah. Periksa kembali huruf/angka PIN Anda.', 'error');
+        }
       }
     });
 
@@ -1412,6 +1475,10 @@
     }
 
     document.getElementById('btn-open-admins').addEventListener('click', () => {
+      if (!isSuperAdmin()) {
+        showToast('Akses ditolak. Hanya Super Admin yang dapat mengelola akun guru/admin.', 'error');
+        return;
+      }
       resetAdminForm();
       renderAdminList();
       openModal('modal-admins');
@@ -1420,6 +1487,10 @@
     document.getElementById('btn-cancel-edit-admin').addEventListener('click', resetAdminForm);
 
     window.openEditAdminModal = function (id) {
+      if (!isSuperAdmin()) {
+        showToast('Akses ditolak. Hanya Super Admin yang dapat mengubah akun guru/admin.', 'error');
+        return;
+      }
       const adm = state.admins.find((a) => a.id === id);
       if (!adm) return;
       document.getElementById('admin-id').value = adm.id;
@@ -1435,6 +1506,10 @@
 
     document.getElementById('form-admin-guru').addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!isSuperAdmin()) {
+        showToast('Akses ditolak. Hanya Super Admin yang dapat menambah atau mengubah akun guru.', 'error');
+        return;
+      }
       const btn = document.getElementById('btn-save-admin');
       btn.disabled = true;
       btn.textContent = 'Menyimpan...';
@@ -1480,6 +1555,10 @@
     });
 
     window.deleteAdminAccount = async function (id) {
+      if (!isSuperAdmin()) {
+        showToast('Akses ditolak. Hanya Super Admin yang dapat menghapus akun guru.', 'error');
+        return;
+      }
       if (state.admins.length <= 1) {
         showToast('Minimal harus ada 1 akun admin/guru.', 'error');
         return;
