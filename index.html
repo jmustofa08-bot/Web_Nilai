@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aplikasi Web</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Konfigurasi font Inter untuk Tailwind CSS
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans m-0 p-0 w-screen h-[100dvh] overflow-hidden relative select-none">
+
+  <!-- Layar Memuat (Loading Overlay) -->
+  <div
+    id="loading-overlay"
+    class="fixed inset-0 z-30 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 px-6 transition-opacity duration-500 ease-out"
+    role="status"
+    aria-live="polite"
+  >
+    <div class="w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-lg p-6 text-center space-y-4">
+      <!-- Ikon Spinner -->
+      <div class="mx-auto w-12 h-12 rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-blue-600 dark:border-t-blue-500 animate-spin"></div>
+
+      <div class="space-y-1">
+        <h1 class="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">
+          Menghubungkan ke Aplikasi...
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+          Mohon tunggu sebentar, sedang memuat halaman dari server.
+        </p>
+      </div>
+
+      <!-- Tombol Alternatif (Muncul otomatis jika pemuatan lambat) -->
+      <div id="slow-load-help" class="hidden pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+        <p class="text-xs text-amber-600 dark:text-amber-400">
+          Halaman membutuhkan waktu lebih lama atau diblokir oleh pengaturan browser.
+        </p>
+        <a
+          id="fallback-direct-link"
+          href="https://script.google.com/macros/s/AKfycby45JpHe2yDd_wtkbexlroErRg7v85J9rLc2bEZwmB8iGaZf36-SS8sCjpQneZuFy1WIg/exec"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-xl transition-colors shadow-sm"
+        >
+          <span>Buka Langsung di Tab Baru</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Iframe Utama untuk Menampilkan Google Apps Script -->
+  <main class="w-full h-full">
+    <iframe
+      id="gas-frame"
+      title="Aplikasi Web Google Apps Script"
+      class="w-full h-full border-0 block bg-white dark:bg-slate-950"
+      allow="camera; microphone; geolocation; fullscreen; clipboard-read; clipboard-write"
+      allowfullscreen
+      loading="eager"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  </main>
+
+  <!-- Panel Kontrol Mengambang Minimalis (Pojok Kanan Bawah) -->
+  <div
+    id="floating-controls"
+    class="fixed bottom-4 right-4 z-20 flex items-center gap-1.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-full p-1.5 shadow-lg transition-all duration-300"
+  >
+    <!-- Tombol Muat Ulang -->
+    <button
+      id="btn-reload"
+      type="button"
+      title="Muat Ulang Halaman"
+      aria-label="Muat Ulang Halaman"
+      class="p-2.5 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors cursor-pointer"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+      </svg>
+    </button>
+
+    <!-- Tombol Buka di Tab Baru -->
+    <a
+      id="btn-open-external"
+      href="https://script.google.com/macros/s/AKfycby45JpHe2yDd_wtkbexlroErRg7v85J9rLc2bEZwmB8iGaZf36-SS8sCjpQneZuFy1WIg/exec"
+      target="_blank"
+      rel="noopener noreferrer"
+      title="Buka di Tab Baru"
+      aria-label="Buka di Tab Baru"
+      class="p-2.5 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+      </svg>
+    </a>
+
+    <!-- Tombol Sembunyikan Panel -->
+    <button
+      id="btn-hide-controls"
+      type="button"
+      title="Sembunyikan Tombol"
+      aria-label="Sembunyikan Tombol"
+      class="p-2.5 text-slate-400 hover:text-rose-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors cursor-pointer"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Notifikasi Toast (Pengganti alert) -->
+  <div
+    id="toast-message"
+    class="fixed top-4 left-1/2 -translate-x-1/2 z-40 px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs sm:text-sm font-medium shadow-lg opacity-0 pointer-events-none transition-opacity duration-300"
+    role="alert"
+  >
+    Memuat ulang aplikasi...
+  </div>
+
+  <script>
+    /**
+     * Konfigurasi URL Google Apps Script Web App.
+     * Anda dapat mengubah tautan di bawah ini kapan saja jika melakukan deployment ulang.
+     */
+    const GAS_WEB_APP_URL =
+      'https://script.google.com/macros/s/AKfycby45JpHe2yDd_wtkbexlroErRg7v85J9rLc2bEZwmB8iGaZf36-SS8sCjpQneZuFy1WIg/exec';
+
+    // Elemen DOM
+    const iframeEl = document.getElementById('gas-frame');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const slowLoadHelp = document.getElementById('slow-load-help');
+    const fallbackDirectLink = document.getElementById('fallback-direct-link');
+    const btnReload = document.getElementById('btn-reload');
+    const btnOpenExternal = document.getElementById('btn-open-external');
+    const btnHideControls = document.getElementById('btn-hide-controls');
+    const floatingControls = document.getElementById('floating-controls');
+    const toastMessage = document.getElementById('toast-message');
+
+    let slowLoadTimer = null;
+    let toastTimer = null;
+
+    /**
+     * Menampilkan pesan notifikasi singkat (toast).
+     * @param {string} text - Pesan yang akan ditampilkan.
+     */
+    function showToast(text) {
+      try {
+        toastMessage.textContent = text;
+        toastMessage.classList.remove('opacity-0');
+        toastMessage.classList.add('opacity-100');
+
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastMessage.classList.remove('opacity-100');
+          toastMessage.classList.add('opacity-0');
+        }, 2500);
+      } catch (error) {
+        console.error('Gagal menampilkan notifikasi:', error);
+      }
+    }
+
+    /**
+     * Menyembunyikan layar loading dengan efek transisi halus.
+     */
+    function hideLoader() {
+      clearTimeout(slowLoadTimer);
+      loadingOverlay.classList.add('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        loadingOverlay.classList.add('hidden');
+      }, 500);
+    }
+
+    /**
+     * Memuat URL Google Apps Script ke dalam iframe,
+     * termasuk meneruskan parameter query (?id=..., dll) dari URL GitHub Pages jika ada.
+     */
+    function loadApp() {
+      try {
+        const currentParams = window.location.search;
+        const targetUrl = currentParams
+          ? `${GAS_WEB_APP_URL}${currentParams}`
+          : GAS_WEB_APP_URL;
+
+        // Perbarui tautan langsung
+        fallbackDirectLink.href = targetUrl;
+        btnOpenExternal.href = targetUrl;
+
+        // Tampilkan layar loading
+        loadingOverlay.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+        slowLoadHelp.classList.add('hidden');
+
+        // Tampilkan bantuan jika pemuatan melebihi 8 detik
+        clearTimeout(slowLoadTimer);
+        slowLoadTimer = setTimeout(() => {
+          slowLoadHelp.classList.remove('hidden');
+        }, 8000);
+
+        // Muat URL ke iframe
+        iframeEl.src = targetUrl;
+      } catch (error) {
+        console.error('Terjadi kesalahan saat memuat aplikasi:', error);
+        slowLoadHelp.classList.remove('hidden');
+        showToast('Gagal memuat tautan aplikasi.');
+      }
+    }
+
+    // Event: Ketika iframe selesai dimuat
+    iframeEl.addEventListener('load', () => {
+      if (iframeEl.src) {
+        hideLoader();
+      }
+    });
+
+    // Event: Tombol muat ulang
+    btnReload.addEventListener('click', () => {
+      showToast('Memuat ulang aplikasi...');
+      loadApp();
+    });
+
+    // Event: Sembunyikan panel kontrol mengambang agar tidak mengganggu tampilan
+    btnHideControls.addEventListener('click', () => {
+      floatingControls.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
+    });
+
+    // Jalankan pemuatan aplikasi saat halaman siap
+    window.addEventListener('DOMContentLoaded', loadApp);
+  </script>
+</body>
+</html>
