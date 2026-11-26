@@ -254,8 +254,8 @@
               <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
               Mode Panel Guru / Admin Aktif
             </span>
-            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-0.5">
-              Anda melihat seluruh data siswa. Kelola nilai, ubah pengaturan sekolah, atau buka database Spreadsheet &amp; Drive.
+            <p id="admin-active-user" class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-0.5">
+              Anda melihat seluruh data siswa. Kelola nilai, akun guru, pengaturan sekolah, atau buka database Spreadsheet &amp; Drive.
             </p>
           </div>
         </div>
@@ -270,6 +270,17 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
             </svg>
             <span>Tambah Nilai</span>
+          </button>
+
+          <button
+            id="btn-open-admins"
+            type="button"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-teal-600 hover:bg-teal-700 text-white shadow-sm transition-all active:scale-95 cursor-pointer"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span>Kelola Guru / Admin</span>
           </button>
 
           <button
@@ -480,11 +491,20 @@
         <button type="button" data-close="modal-login" class="w-8 h-8 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-lg cursor-pointer">&times;</button>
       </div>
       <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-        Masukkan PIN Admin untuk mengelola seluruh nilai siswa dan pengaturan portal.
+        Masuk menggunakan akun Guru/Admin Anda untuk mengelola nilai siswa dan pengaturan portal.
       </p>
-      <form id="form-login" class="space-y-4">
+      <form id="form-login" class="space-y-3.5">
         <div>
-          <label for="input-pin" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">PIN Admin</label>
+          <label for="input-username" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Username Guru / Admin <span class="font-normal text-slate-400">(opsional jika PIN unik)</span></label>
+          <input
+            type="text"
+            id="input-username"
+            placeholder="Contoh: admin"
+            class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
+        <div>
+          <label for="input-pin" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">PIN Akses *</label>
           <input
             type="password"
             id="input-pin"
@@ -493,11 +513,74 @@
             class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
-        <div class="flex justify-end gap-2">
+        <div class="flex justify-end gap-2 pt-1">
           <button type="button" data-close="modal-login" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 cursor-pointer">Batal</button>
           <button type="submit" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm cursor-pointer">Masuk</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL KELOLA MULTI ADMIN / GURU ==================== -->
+  <div id="modal-admins" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div class="animate-fade-in-up bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-2xl p-6 space-y-5 my-auto">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Kelola Akun Guru &amp; Admin</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Tambahkan lebih dari 1 guru/admin agar dapat mengelola nilai bersama.</p>
+        </div>
+        <button type="button" data-close="modal-admins" class="w-8 h-8 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-lg cursor-pointer">&times;</button>
+      </div>
+
+      <!-- Form Tambah / Edit Guru -->
+      <form id="form-admin-guru" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 space-y-3">
+        <div class="flex items-center justify-between">
+          <h4 id="admin-form-title" class="text-xs font-extrabold uppercase tracking-wider text-teal-700 dark:text-teal-400">Tambah Guru / Admin Baru</h4>
+          <button id="btn-cancel-edit-admin" type="button" class="hidden text-xs font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 cursor-pointer">Batal Edit</button>
+        </div>
+        <input type="hidden" id="admin-id" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="admin-nama" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nama Guru / Admin *</label>
+            <input type="text" id="admin-nama" required placeholder="Contoh: Ibu Rina, S.Pd" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500" />
+          </div>
+          <div>
+            <label for="admin-mapel" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Mapel / Jabatan</label>
+            <input type="text" id="admin-mapel" placeholder="Contoh: Guru Matematika" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500" />
+          </div>
+          <div>
+            <label for="admin-username" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Username *</label>
+            <input type="text" id="admin-username" required placeholder="Contoh: rina_mtk" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500" />
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label for="admin-pin" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">PIN *</label>
+              <input type="text" id="admin-pin" required placeholder="guru123" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500" />
+            </div>
+            <div>
+              <label for="admin-role" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Peran</label>
+              <select id="admin-role" class="w-full px-2.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <option value="GURU">Guru</option>
+                <option value="SUPER_ADMIN">Super Admin</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <button id="btn-save-admin" type="submit" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-teal-600 hover:bg-teal-700 text-white shadow-sm disabled:opacity-60 cursor-pointer">
+            Simpan Akun Guru
+          </button>
+        </div>
+      </form>
+
+      <!-- Daftar Akun Guru/Admin Terdaftar -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">Daftar Guru &amp; Admin Terdaftar</h4>
+          <span id="admin-count-badge" class="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">0 Akun</span>
+        </div>
+        <div id="admin-list-container" class="max-h-64 overflow-y-auto space-y-2 pr-1"></div>
+      </div>
     </div>
   </div>
 
@@ -513,73 +596,57 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label for="nilai-nisn" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">NISN *</label>
-            <input type="text" id="nilai-nisn" required placeholder="0081234501" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input type="text" id="nilai-nisn" required placeholder="0081234501" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
           <div>
             <label for="nilai-kelas" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Kelas *</label>
-            <input type="text" id="nilai-kelas" required placeholder="XI IPA 1" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input type="text" id="nilai-kelas" required placeholder="XI IPA 1" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
         </div>
         <div>
           <label for="nilai-nama" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nama Lengkap Siswa *</label>
-          <input type="text" id="nilai-nama" required placeholder="Ahmad Fauzan" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <input type="text" id="nilai-nama" required placeholder="Ahmad Fauzan" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
         <div>
-          <label for="nilai-mapel" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Mata Pelajaran / Tugas *</label>
-          <input type="text" id="nilai-mapel" required placeholder="Matematika - Matriks" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <label for="nilai-mapel" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Mata Pelajaran / Judul Tugas *</label>
+          <input type="text" id="nilai-mapel" required placeholder="Matematika - Matriks" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label for="nilai-skor" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nilai (0-100) *</label>
-            <input type="number" id="nilai-skor" min="0" max="100" required class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input type="number" id="nilai-skor" min="0" max="100" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
           <div>
             <label for="nilai-kkm" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">KKM *</label>
-            <input type="number" id="nilai-kkm" min="0" max="100" required value="75" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input type="number" id="nilai-kkm" min="0" max="100" required value="75" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
         </div>
         <div>
           <label for="nilai-catatan" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Catatan Guru</label>
-          <textarea id="nilai-catatan" rows="2" placeholder="Opsional: keterangan tugas/remedial..." class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+          <textarea id="nilai-catatan" rows="2" placeholder="Contoh: Perlu remedial soal nomor 3-5" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
         </div>
         <div class="flex justify-end gap-2 pt-2">
-          <button type="button" data-close="modal-nilai" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer">Batal</button>
-          <button id="btn-save-nilai" type="submit" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-60 cursor-pointer">Simpan Nilai</button>
+          <button type="button" data-close="modal-nilai" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 cursor-pointer">Batal</button>
+          <button id="btn-save-nilai" type="submit" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm disabled:opacity-60 cursor-pointer">Simpan Nilai</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ==================== MODAL UPLOAD TUGAS KE DRIVE ==================== -->
-  <div id="modal-upload" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="animate-fade-in-up bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-md p-6 space-y-4">
+  <!-- ==================== MODAL KONFIRMASI HAPUS ==================== -->
+  <div id="modal-delete" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="animate-fade-in-up bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-sm p-6 space-y-4">
       <div class="flex items-center justify-between">
-        <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Unggah Bukti Tugas</h3>
-        <button type="button" data-close="modal-upload" class="w-8 h-8 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-lg cursor-pointer">&times;</button>
+        <h3 class="text-lg font-extrabold text-rose-600 dark:text-rose-400">Konfirmasi Hapus</h3>
+        <button type="button" data-close="modal-delete" class="w-8 h-8 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-lg cursor-pointer">&times;</button>
       </div>
-      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs space-y-1">
-        <p><span class="text-slate-500">Siswa:</span> <strong id="upload-info-nama">-</strong> (<span id="upload-info-kelas">-</span>)</p>
-        <p><span class="text-slate-500">Tugas:</span> <strong id="upload-info-mapel">-</strong></p>
+      <p id="delete-confirm-text" class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+        Apakah Anda yakin ingin menghapus data nilai ini?
+      </p>
+      <div class="flex justify-end gap-2 pt-1">
+        <button type="button" data-close="modal-delete" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 cursor-pointer">Batal</button>
+        <button id="btn-confirm-delete" type="button" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-rose-600 hover:bg-rose-700 text-white shadow-sm disabled:opacity-60 cursor-pointer">Ya, Hapus</button>
       </div>
-      <form id="form-upload" class="space-y-4">
-        <input type="hidden" id="upload-record-id" />
-        <div>
-          <label for="upload-file" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-            Pilih File Tugas (PDF, Foto, atau Dokumen - Maks 8MB)
-          </label>
-          <input
-            type="file"
-            id="upload-file"
-            required
-            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
-            class="w-full text-xs sm:text-sm text-slate-600 dark:text-slate-300 file:mr-3 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-indigo-950 dark:file:text-indigo-300 cursor-pointer"
-          />
-        </div>
-        <div class="flex justify-end gap-2">
-          <button type="button" data-close="modal-upload" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer">Batal</button>
-          <button id="btn-submit-upload" type="submit" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-60 cursor-pointer">Unggah ke Drive</button>
-        </div>
-      </form>
     </div>
   </div>
 
@@ -592,46 +659,62 @@
       </div>
       <form id="form-settings" class="space-y-3.5">
         <div>
-          <label for="set-school-name" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nama Sekolah</label>
-          <input type="text" id="set-school-name" required class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <label for="set-school-name" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nama Sekolah *</label>
+          <input type="text" id="set-school-name" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
         <div>
-          <label for="set-academic-year" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Tahun Ajaran &amp; Semester</label>
-          <input type="text" id="set-academic-year" required class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <label for="set-academic-year" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Tahun Ajaran &amp; Semester *</label>
+          <input type="text" id="set-academic-year" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label for="set-default-kkm" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">KKM Default</label>
-            <input type="number" id="set-default-kkm" min="0" max="100" required class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <label for="set-default-kkm" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">KKM Default *</label>
+            <input type="number" id="set-default-kkm" min="0" max="100" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
           <div>
-            <label for="set-admin-pin" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">PIN Admin Baru</label>
-            <input type="text" id="set-admin-pin" required class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <label for="set-admin-pin" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">PIN Cadangan Utama *</label>
+            <input type="text" id="set-admin-pin" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
         </div>
         <div>
-          <label for="set-announcement" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Teks Pengumuman (Berjalan)</label>
-          <textarea id="set-announcement" rows="3" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+          <label for="set-announcement" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Teks Pengumuman Berjalan</label>
+          <textarea id="set-announcement" rows="3" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
         </div>
         <div class="flex justify-end gap-2 pt-2">
-          <button type="button" data-close="modal-settings" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer">Batal</button>
-          <button id="btn-save-settings" type="submit" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-60 cursor-pointer">Simpan Pengaturan</button>
+          <button type="button" data-close="modal-settings" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 cursor-pointer">Batal</button>
+          <button id="btn-save-settings" type="submit" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm disabled:opacity-60 cursor-pointer">Simpan Pengaturan</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ==================== MODAL KONFIRMASI HAPUS ==================== -->
-  <div id="modal-delete" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="animate-fade-in-up bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-sm p-6 space-y-4">
-      <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Hapus Data Nilai?</h3>
-      <p id="delete-confirm-text" class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
-        Data yang dihapus tidak dapat dikembalikan.
-      </p>
-      <div class="flex justify-end gap-2">
-        <button type="button" data-close="modal-delete" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer">Batal</button>
-        <button id="btn-confirm-delete" type="button" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-rose-600 hover:bg-rose-700 text-white disabled:opacity-60 cursor-pointer">Ya, Hapus</button>
+  <!-- ==================== MODAL UPLOAD TUGAS KE DRIVE ==================== -->
+  <div id="modal-upload" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="animate-fade-in-up bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-md p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Unggah Bukti Tugas</h3>
+        <button type="button" data-close="modal-upload" class="w-8 h-8 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-lg cursor-pointer">&times;</button>
       </div>
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 text-xs space-y-1">
+        <p><span class="text-slate-500">Siswa:</span> <strong id="upload-info-nama" class="text-slate-900 dark:text-white">-</strong> (<span id="upload-info-kelas">-</span>)</p>
+        <p><span class="text-slate-500">Mapel / Tugas:</span> <strong id="upload-info-mapel" class="text-slate-900 dark:text-white">-</strong></p>
+      </div>
+      <form id="form-upload" class="space-y-4">
+        <input type="hidden" id="upload-record-id" />
+        <div>
+          <label for="upload-file" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Pilih File (PDF / Foto / Dokumen, maks. 8MB) *</label>
+          <input
+            type="file"
+            id="upload-file"
+            required
+            class="w-full text-xs text-slate-600 dark:text-slate-300 file:mr-3 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-indigo-900/40 dark:file:text-indigo-300 cursor-pointer"
+          />
+        </div>
+        <div class="flex justify-end gap-2 pt-1">
+          <button type="button" data-close="modal-upload" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 cursor-pointer">Batal</button>
+          <button id="btn-submit-upload" type="submit" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm disabled:opacity-60 cursor-pointer">Unggah ke Drive</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -654,6 +737,7 @@
     // State Aplikasi
     const state = {
       isAdmin: false,
+      currentAdmin: null,
       isDemoMode: false,
       settings: {
         schoolName: 'SMAN 13 GARUT',
@@ -663,6 +747,7 @@
         announcement: ''
       },
       records: [],
+      admins: [],
       dbLinks: {},
       pendingDeleteId: null
     };
@@ -680,6 +765,9 @@
       btnAdminLabel: document.getElementById('btn-admin-label'),
       btnThemeToggle: document.getElementById('btn-theme-toggle'),
       adminToolbar: document.getElementById('admin-toolbar'),
+      adminActiveUser: document.getElementById('admin-active-user'),
+      adminListContainer: document.getElementById('admin-list-container'),
+      adminCountBadge: document.getElementById('admin-count-badge'),
       linkSpreadsheet: document.getElementById('link-spreadsheet'),
       linkDriveFolder: document.getElementById('link-drive-folder'),
       statTotal: document.getElementById('stat-total'),
@@ -874,6 +962,9 @@
     }
 
     async function apiPost(action, payload = {}) {
+      const actor = state.currentAdmin
+        ? `${state.currentAdmin.nama} (${state.currentAdmin.username})`
+        : 'GURU';
       const response = await fetch(GAS_WEB_APP_URL, {
         method: 'POST',
         mode: 'cors',
@@ -882,7 +973,7 @@
         headers: {
           'Content-Type': 'text/plain;charset=utf-8'
         },
-        body: JSON.stringify({ action, ...payload })
+        body: JSON.stringify({ action, actor, ...payload })
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return parseJsonSafe(response);
@@ -900,6 +991,10 @@
         announcement:
           'Batas akhir pengumpulan tugas remedial SMAN 13 GARUT adalah 15 Desember 2026 pukul 23.59 WIB. (Mode Demo Offline aktif — coba cari NISN: 0081234501 atau 0081234502).'
       };
+      state.admins = [
+        { id: 'ADM-001', nama: 'Administrator Utama', mapel: 'Admin Portal', username: 'admin', pin: 'admin123', role: 'SUPER_ADMIN' },
+        { id: 'ADM-002', nama: 'Ibu Rina, S.Pd', mapel: 'Guru Matematika', username: 'rina', pin: 'guru123', role: 'GURU' }
+      ];
       state.records = [
         { id: 'DEMO-1', nisn: '0081234501', nama: 'Ahmad Fauzan', kelas: 'XI IPA 1', mapel: 'Matematika - Matriks', nilai: 88, kkm: 75, status: 'TUNTAS', catatan: 'Sangat baik, lanjutkan!', linkDrive: '' },
         { id: 'DEMO-2', nisn: '0081234501', nama: 'Ahmad Fauzan', kelas: 'XI IPA 1', mapel: 'Fisika - Kinematika', nilai: 82, kkm: 75, status: 'TUNTAS', catatan: 'Tugas lengkap dan rapi', linkDrive: '' },
@@ -936,12 +1031,14 @@
 
         state.settings = { ...state.settings, ...(res.settings || {}) };
         state.records = Array.isArray(res.records) ? res.records : [];
+        state.admins = Array.isArray(res.admins) ? res.admins : [];
         state.dbLinks = res.dbLinks || {};
 
         applySettingsToUI();
         populateKelasFilter();
         updateStats();
         renderList();
+        renderAdminList();
         setConnectionStatus('connected');
       } catch (err) {
         console.error('Detail error koneksi GAS:', err);
@@ -1205,12 +1302,14 @@
     el.btnAdminToggle.addEventListener('click', () => {
       if (state.isAdmin) {
         state.isAdmin = false;
+        state.currentAdmin = null;
         el.adminToolbar.classList.add('hidden');
         el.btnAdminLabel.textContent = 'Panel Guru';
         el.searchInput.placeholder = 'Masukkan NISN Anda secara lengkap untuk melihat nilai...';
         renderList();
         showToast('Keluar dari Panel Guru.', 'info');
       } else {
+        document.getElementById('input-username').value = '';
         document.getElementById('input-pin').value = '';
         openModal('modal-login');
         setTimeout(() => document.getElementById('input-pin').focus(), 100);
@@ -1219,36 +1318,203 @@
 
     document.getElementById('form-login').addEventListener('submit', (e) => {
       e.preventDefault();
+      const enteredUser = document.getElementById('input-username').value.trim().toLowerCase();
       const enteredPin = document.getElementById('input-pin').value.trim();
-      const validPin = String(state.settings.adminPin || 'admin123').trim();
+      const fallbackPin = String(state.settings.adminPin || 'admin123').trim();
 
-      if (enteredPin === validPin) {
+      let matchedAdmin = null;
+
+      if (state.admins.length > 0) {
+        if (enteredUser) {
+          matchedAdmin = state.admins.find(
+            (a) =>
+              String(a.username || '').trim().toLowerCase() === enteredUser &&
+              String(a.pin || '').trim() === enteredPin
+          );
+        } else {
+          // Jika username dikosongkan, cocokkan PIN di daftar admin/guru
+          matchedAdmin = state.admins.find((a) => String(a.pin || '').trim() === enteredPin);
+        }
+      }
+
+      // Fallback ke PIN utama di sheet Pengaturan jika belum ada di sheet Admin_Guru
+      if (!matchedAdmin && (!enteredUser || enteredUser === 'admin') && enteredPin === fallbackPin) {
+        matchedAdmin = {
+          id: 'ADM-DEFAULT',
+          nama: 'Administrator Utama',
+          mapel: 'Admin Portal',
+          username: 'admin',
+          role: 'SUPER_ADMIN'
+        };
+      }
+
+      if (matchedAdmin) {
         state.isAdmin = true;
+        state.currentAdmin = matchedAdmin;
         closeModal('modal-login');
         el.adminToolbar.classList.remove('hidden');
         el.btnAdminLabel.textContent = 'Keluar Admin';
+        el.adminActiveUser.textContent = `Masuk sebagai: ${matchedAdmin.nama}${matchedAdmin.mapel ? ' (' + matchedAdmin.mapel + ')' : ''} • Anda dapat mengelola nilai, akun guru, dan pengaturan portal.`;
         el.searchInput.placeholder = 'Cari Nama Siswa, NISN, atau Mapel/Tugas...';
         renderList();
-        showToast('Berhasil masuk ke Panel Guru.', 'success');
+        renderAdminList();
+        showToast(`Selamat datang, ${matchedAdmin.nama}!`, 'success');
       } else {
-        showToast('PIN Admin salah. Silakan coba lagi.', 'error');
+        showToast('Username atau PIN salah. Silakan coba lagi.', 'error');
       }
     });
 
-    /* ==================== CRUD NILAI (TAMBAH / EDIT / HAPUS) ==================== */
+    /* ==================== KELOLA MULTI ADMIN / GURU ==================== */
+
+    function resetAdminForm() {
+      document.getElementById('form-admin-guru').reset();
+      document.getElementById('admin-id').value = '';
+      document.getElementById('admin-form-title').textContent = 'Tambah Guru / Admin Baru';
+      document.getElementById('btn-save-admin').textContent = 'Simpan Akun Guru';
+      document.getElementById('btn-cancel-edit-admin').classList.add('hidden');
+    }
+
+    function renderAdminList() {
+      if (!el.adminListContainer) return;
+      el.adminCountBadge.textContent = `${state.admins.length} Akun`;
+
+      if (state.admins.length === 0) {
+        el.adminListContainer.innerHTML =
+          '<p class="text-xs text-slate-500 text-center py-4">Belum ada data guru/admin terdaftar di sheet Admin_Guru.</p>';
+        return;
+      }
+
+      el.adminListContainer.innerHTML = state.admins
+        .map((a) => {
+          const isSuper = a.role === 'SUPER_ADMIN';
+          const roleBadge = isSuper
+            ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300'
+            : 'bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300';
+          return `
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-950/60">
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <p class="text-sm font-bold text-slate-900 dark:text-white truncate">${escapeHtml(a.nama)}</p>
+                  <span class="px-2 py-0.5 text-[10px] font-bold rounded-full ${roleBadge}">${isSuper ? 'Super Admin' : 'Guru'}</span>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  ${escapeHtml(a.mapel || 'Guru')} &bull; User: <span class="font-mono font-semibold text-slate-700 dark:text-slate-300">${escapeHtml(a.username)}</span> &bull; PIN: <span class="font-mono">${escapeHtml(a.pin)}</span>
+                </p>
+              </div>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <button type="button" onclick="openEditAdminModal('${escapeHtml(a.id)}')" class="px-2.5 py-1.5 text-xs font-semibold rounded-xl bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-900/40 dark:text-amber-300 cursor-pointer">Edit</button>
+                <button type="button" onclick="deleteAdminAccount('${escapeHtml(a.id)}')" class="px-2.5 py-1.5 text-xs font-semibold rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-900/40 dark:text-rose-300 cursor-pointer">Hapus</button>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+    }
+
+    document.getElementById('btn-open-admins').addEventListener('click', () => {
+      resetAdminForm();
+      renderAdminList();
+      openModal('modal-admins');
+    });
+
+    document.getElementById('btn-cancel-edit-admin').addEventListener('click', resetAdminForm);
+
+    window.openEditAdminModal = function (id) {
+      const adm = state.admins.find((a) => a.id === id);
+      if (!adm) return;
+      document.getElementById('admin-id').value = adm.id;
+      document.getElementById('admin-nama').value = adm.nama;
+      document.getElementById('admin-mapel').value = adm.mapel || '';
+      document.getElementById('admin-username').value = adm.username;
+      document.getElementById('admin-pin').value = adm.pin;
+      document.getElementById('admin-role').value = adm.role === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : 'GURU';
+      document.getElementById('admin-form-title').textContent = 'Edit Akun: ' + adm.nama;
+      document.getElementById('btn-save-admin').textContent = 'Perbarui Akun';
+      document.getElementById('btn-cancel-edit-admin').classList.remove('hidden');
+    };
+
+    document.getElementById('form-admin-guru').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-admin');
+      btn.disabled = true;
+      btn.textContent = 'Menyimpan...';
+
+      const payload = {
+        id: document.getElementById('admin-id').value || '',
+        nama: document.getElementById('admin-nama').value.trim(),
+        mapel: document.getElementById('admin-mapel').value.trim(),
+        username: document.getElementById('admin-username').value.trim().toLowerCase(),
+        pin: document.getElementById('admin-pin').value.trim(),
+        role: document.getElementById('admin-role').value
+      };
+
+      try {
+        if (state.isDemoMode) {
+          const duplicate = state.admins.find(
+            (a) => a.username.toLowerCase() === payload.username && a.id !== payload.id
+          );
+          if (duplicate) throw new Error(`Username "${payload.username}" sudah digunakan.`);
+          if (payload.id) {
+            const idx = state.admins.findIndex((a) => a.id === payload.id);
+            if (idx !== -1) state.admins[idx] = { ...state.admins[idx], ...payload };
+          } else {
+            state.admins.push({ ...payload, id: 'ADM-' + Date.now() });
+          }
+          resetAdminForm();
+          renderAdminList();
+          showToast('Akun guru disimpan di Mode Demo (lokal).', 'success');
+          return;
+        }
+
+        const res = await apiPost('saveAdminGuru', { data: payload });
+        if (!res.success) throw new Error(res.message);
+        resetAdminForm();
+        showToast(res.message || 'Akun guru berhasil disimpan!', 'success');
+        await loadInitialData();
+      } catch (err) {
+        showToast('Gagal menyimpan akun: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = document.getElementById('admin-id').value ? 'Perbarui Akun' : 'Simpan Akun Guru';
+      }
+    });
+
+    window.deleteAdminAccount = async function (id) {
+      if (state.admins.length <= 1) {
+        showToast('Minimal harus ada 1 akun admin/guru.', 'error');
+        return;
+      }
+
+      try {
+        if (state.isDemoMode) {
+          state.admins = state.admins.filter((a) => a.id !== id);
+          renderAdminList();
+          showToast('Akun dihapus di Mode Demo (lokal).', 'success');
+          return;
+        }
+
+        const res = await apiPost('deleteAdminGuru', { id });
+        if (!res.success) throw new Error(res.message);
+        showToast(res.message || 'Akun berhasil dihapus.', 'success');
+        await loadInitialData();
+      } catch (err) {
+        showToast('Gagal menghapus akun: ' + err.message, 'error');
+      }
+    };
+
+    /* ==================== CRUD NILAI SISWA ==================== */
 
     document.getElementById('btn-add-nilai').addEventListener('click', () => {
-      document.getElementById('modal-nilai-title').textContent = 'Tambah Nilai Siswa';
       document.getElementById('form-nilai').reset();
       document.getElementById('nilai-id').value = '';
       document.getElementById('nilai-kkm').value = state.settings.defaultKkm || '75';
+      document.getElementById('modal-nilai-title').textContent = 'Tambah Nilai Siswa';
       openModal('modal-nilai');
     });
 
     window.openEditNilaiModal = function (id) {
       const rec = state.records.find((r) => r.id === id);
       if (!rec) return;
-      document.getElementById('modal-nilai-title').textContent = 'Edit Nilai Siswa';
       document.getElementById('nilai-id').value = rec.id;
       document.getElementById('nilai-nisn').value = rec.nisn;
       document.getElementById('nilai-nama').value = rec.nama;
@@ -1257,6 +1523,7 @@
       document.getElementById('nilai-skor').value = rec.nilai;
       document.getElementById('nilai-kkm').value = rec.kkm;
       document.getElementById('nilai-catatan').value = rec.catatan || '';
+      document.getElementById('modal-nilai-title').textContent = 'Edit Nilai Siswa';
       openModal('modal-nilai');
     };
 
