@@ -253,14 +253,14 @@
 
         <div class="flex flex-wrap items-center gap-2">
           <button
-            id="btn-add-nilai"
+            id="btn-batch-nilai"
             type="button"
             class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-all active:scale-95 cursor-pointer"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            <span>Tambah Nilai</span>
+            <span>Input Banyak Nilai</span>
           </button>
 
           <button
@@ -277,7 +277,7 @@
           <button
             id="btn-open-settings"
             type="button"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95 cursor-pointer"
+            class="hidden inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95 cursor-pointer"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -561,8 +561,8 @@
             <input type="text" id="admin-nama" required placeholder="Contoh: Ibu Rina, S.Pd" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500" />
           </div>
           <div>
-            <label for="admin-mapel" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Mapel / Jabatan</label>
-            <input type="text" id="admin-mapel" placeholder="Contoh: Guru Matematika" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500" />
+            <label for="admin-mapel" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Mata Pelajaran yang Diajar *</label>
+            <input type="text" id="admin-mapel" required placeholder="Contoh: Matematika (atau: Matematika, Fisika)" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500" />
           </div>
           <div>
             <label for="admin-username" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Username *</label>
@@ -644,6 +644,86 @@
         <div class="flex justify-end gap-2 pt-2">
           <button type="button" data-close="modal-nilai" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 cursor-pointer">Batal</button>
           <button id="btn-save-nilai" type="submit" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm disabled:opacity-60 cursor-pointer">Simpan Nilai</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL INPUT BANYAK NILAI SISWA ==================== -->
+  <div id="modal-batch-nilai" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div class="animate-fade-in-up bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-4xl p-6 space-y-4 my-auto">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Input Banyak Nilai Siswa Sekaligus</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Masukkan banyak siswa dalam satu kali simpan atau tempel (paste) langsung dari Excel / Spreadsheet.</p>
+        </div>
+        <button type="button" data-close="modal-batch-nilai" class="w-8 h-8 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-lg cursor-pointer">&times;</button>
+      </div>
+
+      <form id="form-batch-nilai" class="space-y-4">
+        <!-- Info Umum Kelas, Mapel & KKM -->
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800">
+          <div class="sm:col-span-4">
+            <label for="batch-kelas" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Kelas *</label>
+            <input type="text" id="batch-kelas" required placeholder="Contoh: XI IPA 1" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <div class="sm:col-span-6">
+            <label for="batch-mapel" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Mata Pelajaran / Tugas *</label>
+            <input type="text" id="batch-mapel" required placeholder="Contoh: Matematika - Matriks" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <p id="batch-mapel-hint" class="hidden text-[11px] text-indigo-600 dark:text-indigo-400 mt-1 font-medium"></p>
+          </div>
+          <div class="sm:col-span-2">
+            <label for="batch-kkm" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">KKM *</label>
+            <input type="number" id="batch-kkm" min="0" max="100" required value="75" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+        </div>
+
+        <!-- Kotak Tempel Cepat dari Excel -->
+        <div class="p-3.5 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-200/70 dark:border-indigo-800/50 space-y-2">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <p class="text-xs font-bold text-indigo-900 dark:text-indigo-200">Tempel Cepat dari Excel / Google Sheets (Opsional)</p>
+            <button type="button" id="btn-parse-paste" class="self-start sm:self-auto px-3 py-1.5 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer">
+              Masukkan ke Tabel
+            </button>
+          </div>
+          <textarea
+            id="batch-paste-area"
+            rows="2"
+            placeholder="Salin 4 kolom dari Excel (NISN [Tab] Nama Siswa [Tab] Nilai [Tab] Catatan) lalu tempel di sini..."
+            class="w-full px-3 py-2 text-xs rounded-xl border border-indigo-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          ></textarea>
+        </div>
+
+        <!-- Daftar Baris Siswa -->
+        <div class="space-y-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span id="batch-row-counter" class="text-xs font-bold text-slate-600 dark:text-slate-300">Daftar Siswa (5 Baris)</span>
+            <div class="flex items-center gap-2">
+              <button type="button" id="btn-add-batch-1" class="px-3 py-1.5 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 cursor-pointer">+ 1 Baris</button>
+              <button type="button" id="btn-add-batch-5" class="px-3 py-1.5 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 cursor-pointer">+ 5 Baris</button>
+            </div>
+          </div>
+
+          <div class="max-h-72 overflow-y-auto rounded-2xl border border-slate-200 dark:border-slate-800">
+            <table class="w-full text-left border-collapse">
+              <thead class="sticky top-0 z-10 bg-slate-100 dark:bg-slate-800 text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400">
+                <tr>
+                  <th class="py-2.5 px-3 w-10 text-center">#</th>
+                  <th class="py-2.5 px-2 w-36">NISN *</th>
+                  <th class="py-2.5 px-2">Nama Lengkap Siswa *</th>
+                  <th class="py-2.5 px-2 w-24">Nilai *</th>
+                  <th class="py-2.5 px-2">Catatan</th>
+                  <th class="py-2.5 px-2 w-10 text-center"></th>
+                </tr>
+              </thead>
+              <tbody id="batch-rows-body" class="divide-y divide-slate-200/70 dark:divide-slate-800 text-xs"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-1">
+          <button type="button" data-close="modal-batch-nilai" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 cursor-pointer">Batal</button>
+          <button id="btn-save-batch-nilai" type="submit" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm disabled:opacity-60 cursor-pointer">Simpan Semua Nilai</button>
         </div>
       </form>
     </div>
@@ -782,6 +862,7 @@
       btnThemeToggle: document.getElementById('btn-theme-toggle'),
       adminToolbar: document.getElementById('admin-toolbar'),
       btnOpenAdmins: document.getElementById('btn-open-admins'),
+      btnOpenSettings: document.getElementById('btn-open-settings'),
       adminActiveUser: document.getElementById('admin-active-user'),
       adminListContainer: document.getElementById('admin-list-container'),
       adminCountBadge: document.getElementById('admin-count-badge'),
@@ -909,6 +990,48 @@
           state.currentAdmin &&
           String(state.currentAdmin.role || '').trim().toUpperCase() === 'SUPER_ADMIN'
       );
+    }
+
+    function extractTeacherSubjects(rawMapel) {
+      return String(rawMapel || '')
+        .split(/[,;/|]+/)
+        .map((s) =>
+          s
+            .trim()
+            .replace(/^guru\s+(mata\s+pelajaran|mapel)\s+/i, '')
+            .replace(/^guru\s+/i, '')
+            .trim()
+            .toLowerCase()
+        )
+        .filter(Boolean);
+    }
+
+    function matchesTeacherMapel(recordMapel, teacherMapel) {
+      const subjects = extractTeacherSubjects(teacherMapel);
+      if (subjects.length === 0) return false;
+      const target = String(recordMapel || '').trim().toLowerCase();
+      if (!target) return false;
+      return subjects.some((subj) => target.includes(subj) || subj.includes(target));
+    }
+
+    function updateToolbarPermissions() {
+      const superAdmin = isSuperAdmin();
+      el.btnOpenAdmins.classList.toggle('hidden', !superAdmin);
+      el.btnOpenSettings.classList.toggle('hidden', !superAdmin);
+
+      if (superAdmin && state.dbLinks.spreadsheetUrl) {
+        el.linkSpreadsheet.href = state.dbLinks.spreadsheetUrl;
+        el.linkSpreadsheet.classList.remove('hidden');
+      } else {
+        el.linkSpreadsheet.classList.add('hidden');
+      }
+
+      if (superAdmin && state.dbLinks.folderUrl) {
+        el.linkDriveFolder.href = state.dbLinks.folderUrl;
+        el.linkDriveFolder.classList.remove('hidden');
+      } else {
+        el.linkDriveFolder.classList.add('hidden');
+      }
     }
 
     function openModal(id) {
@@ -1095,19 +1218,16 @@
       el.announcementText.textContent =
         state.settings.announcement || 'Belum ada pengumuman terbaru.';
 
-      if (state.dbLinks.spreadsheetUrl) {
-        el.linkSpreadsheet.href = state.dbLinks.spreadsheetUrl;
-        el.linkSpreadsheet.classList.remove('hidden');
-      }
-      if (state.dbLinks.folderUrl) {
-        el.linkDriveFolder.href = state.dbLinks.folderUrl;
-        el.linkDriveFolder.classList.remove('hidden');
-      }
+      updateToolbarPermissions();
     }
 
     function populateKelasFilter() {
       const currentVal = el.filterKelas.value;
-      const kelasSet = [...new Set(state.records.map((r) => r.kelas).filter(Boolean))].sort();
+      const sourceRecords =
+        state.isAdmin && !isSuperAdmin()
+          ? state.records.filter((r) => matchesTeacherMapel(r.mapel, state.currentAdmin?.mapel))
+          : state.records;
+      const kelasSet = [...new Set(sourceRecords.map((r) => r.kelas).filter(Boolean))].sort();
       el.filterKelas.innerHTML = '<option value="ALL">Semua Kelas</option>';
       kelasSet.forEach((k) => {
         const opt = document.createElement('option');
@@ -1147,8 +1267,11 @@
         });
       }
 
-      // Mode Panel Guru / Admin: dapat melihat seluruh data & mencari berdasarkan Nama, NISN, Mapel, atau Kelas
+      // Mode Panel Guru / Admin: Guru hanya melihat mapel yang diajar, Super Admin melihat semua
       return state.records.filter((r) => {
+        if (!isSuperAdmin() && !matchesTeacherMapel(r.mapel, state.currentAdmin?.mapel)) {
+          return false;
+        }
         const matchKelas = kelas === 'ALL' || r.kelas === kelas;
         const matchStatus = status === 'ALL' || r.status === status;
         const matchQ =
@@ -1202,6 +1325,14 @@
           el.emptyTitle.textContent = `Data untuk NISN "${q}" tidak ditemukan`;
           el.emptySubtitle.textContent =
             'Pastikan nomor NISN yang dimasukkan sudah benar dan lengkap, atau periksa filter Kelas/Status.';
+        } else if (state.isAdmin && !isSuperAdmin() && extractTeacherSubjects(state.currentAdmin?.mapel).length === 0) {
+          el.emptyTitle.textContent = 'Mata pelajaran akun guru belum diatur';
+          el.emptySubtitle.textContent =
+            'Hubungi Super Admin untuk mengatur mata pelajaran yang Anda ajar agar daftar nilai siswa dapat ditampilkan.';
+        } else if (state.isAdmin && !isSuperAdmin()) {
+          el.emptyTitle.textContent = `Belum ada data siswa untuk mapel "${state.currentAdmin?.mapel || ''}"`;
+          el.emptySubtitle.textContent =
+            'Klik "Input Banyak Nilai" di atas untuk menambahkan nilai siswa pada mata pelajaran Anda, atau ubah filter pencarian.';
         } else {
           el.emptyTitle.textContent = 'Tidak ada data nilai yang cocok';
           el.emptySubtitle.textContent = 'Coba ubah kata kunci pencarian atau filter kelas/status.';
@@ -1354,9 +1485,10 @@
         state.isAdmin = false;
         state.currentAdmin = null;
         el.adminToolbar.classList.add('hidden');
-        el.btnOpenAdmins.classList.add('hidden');
+        updateToolbarPermissions();
         el.btnAdminLabel.textContent = 'Panel Guru';
         el.searchInput.placeholder = 'Masukkan NISN Anda secara lengkap untuk melihat nilai...';
+        populateKelasFilter();
         renderList();
         showToast('Keluar dari Panel Guru.', 'info');
       } else {
@@ -1409,64 +1541,54 @@
         state.currentAdmin = matchedAdmin;
         closeModal('modal-login');
         el.adminToolbar.classList.remove('hidden');
-        el.btnOpenAdmins.classList.toggle('hidden', !isSuperAdmin());
+        updateToolbarPermissions();
         el.btnAdminLabel.textContent = isSuperAdmin() ? 'Keluar Admin' : 'Keluar Guru';
         el.adminActiveUser.textContent = isSuperAdmin()
           ? `Masuk sebagai: ${matchedAdmin.nama} (Super Admin) • Anda memiliki akses penuh untuk mengelola nilai, akun guru/admin, dan pengaturan portal.`
-          : `Masuk sebagai: ${matchedAdmin.nama}${matchedAdmin.mapel ? ' (' + matchedAdmin.mapel + ')' : ''} (Guru) • Anda dapat mengelola data nilai siswa.`;
+          : `Masuk sebagai: ${matchedAdmin.nama} • Menampilkan khusus siswa pada mata pelajaran: ${matchedAdmin.mapel || 'Belum diatur'}.`;
         el.searchInput.placeholder = 'Cari Nama Siswa, NISN, atau Mapel/Tugas...';
+        populateKelasFilter();
         renderList();
         renderAdminList();
         showToast(`Selamat datang, ${matchedAdmin.nama}!`, 'success');
       } else {
-        if (state.admins.length === 0 && enteredUser && enteredUser !== 'admin') {
-          showToast('Akun belum terbaca. Masuk dulu pakai admin / admin123 atau deploy ulang Code.gs versi baru.', 'error');
-        } else {
-          showToast('Username atau PIN salah. Periksa kembali huruf/angka PIN Anda.', 'error');
-        }
+        showToast('Username atau PIN salah. Silakan periksa kembali.', 'error');
       }
     });
 
     /* ==================== KELOLA MULTI ADMIN / GURU ==================== */
 
-    function resetAdminForm() {
-      document.getElementById('form-admin-guru').reset();
-      document.getElementById('admin-id').value = '';
-      document.getElementById('admin-form-title').textContent = 'Tambah Guru / Admin Baru';
-      document.getElementById('btn-save-admin').textContent = 'Simpan Akun Guru';
-      document.getElementById('btn-cancel-edit-admin').classList.add('hidden');
-    }
-
     function renderAdminList() {
-      if (!el.adminListContainer) return;
+      if (!el.adminListContainer || !el.adminCountBadge) return;
       el.adminCountBadge.textContent = `${state.admins.length} Akun`;
 
       if (state.admins.length === 0) {
         el.adminListContainer.innerHTML =
-          '<p class="text-xs text-slate-500 text-center py-4">Belum ada data guru/admin terdaftar di sheet Admin_Guru.</p>';
+          '<p class="text-xs text-slate-500 dark:text-slate-400 text-center py-4">Belum ada data guru/admin di Spreadsheet.</p>';
         return;
       }
 
       el.adminListContainer.innerHTML = state.admins
-        .map((a) => {
-          const isSuper = a.role === 'SUPER_ADMIN';
+        .map((adm) => {
+          const isSuper = String(adm.role || '').toUpperCase() === 'SUPER_ADMIN';
           const roleBadge = isSuper
-            ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300'
-            : 'bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300';
+            ? '<span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300">Super Admin</span>'
+            : '<span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-teal-100 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300">Guru</span>';
+
           return `
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-950/60">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-950/70">
               <div class="min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">
-                  <p class="text-sm font-bold text-slate-900 dark:text-white truncate">${escapeHtml(a.nama)}</p>
-                  <span class="px-2 py-0.5 text-[10px] font-bold rounded-full ${roleBadge}">${isSuper ? 'Super Admin' : 'Guru'}</span>
+                  <p class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">${escapeHtml(adm.nama)}</p>
+                  ${roleBadge}
                 </div>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  ${escapeHtml(a.mapel || 'Guru')} &bull; User: <span class="font-mono font-semibold text-slate-700 dark:text-slate-300">${escapeHtml(a.username)}</span> &bull; PIN: <span class="font-mono">${escapeHtml(a.pin)}</span>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  Mapel: <strong class="text-slate-700 dark:text-slate-300">${escapeHtml(adm.mapel || '-')}</strong> &bull; User: <code class="font-mono">${escapeHtml(adm.username)}</code> &bull; PIN: <code class="font-mono">${escapeHtml(adm.pin)}</code>
                 </p>
               </div>
               <div class="flex items-center gap-1.5 shrink-0">
-                <button type="button" onclick="openEditAdminModal('${escapeHtml(a.id)}')" class="px-2.5 py-1.5 text-xs font-semibold rounded-xl bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-900/40 dark:text-amber-300 cursor-pointer">Edit</button>
-                <button type="button" onclick="deleteAdminAccount('${escapeHtml(a.id)}')" class="px-2.5 py-1.5 text-xs font-semibold rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-900/40 dark:text-rose-300 cursor-pointer">Hapus</button>
+                <button type="button" onclick="editAdminGuru('${escapeHtml(adm.id)}')" class="px-2.5 py-1.5 text-xs font-semibold rounded-xl bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-900/40 dark:text-amber-300 cursor-pointer">Edit</button>
+                <button type="button" onclick="deleteAdminGuru('${escapeHtml(adm.id)}')" class="px-2.5 py-1.5 text-xs font-semibold rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-900/40 dark:text-rose-300 cursor-pointer">Hapus</button>
               </div>
             </div>
           `;
@@ -1474,9 +1596,18 @@
         .join('');
     }
 
+    function resetAdminForm() {
+      document.getElementById('form-admin-guru').reset();
+      document.getElementById('admin-id').value = '';
+      document.getElementById('admin-role').value = 'GURU';
+      document.getElementById('admin-form-title').textContent = 'Tambah Guru / Admin Baru';
+      document.getElementById('btn-save-admin').textContent = 'Simpan Akun Guru';
+      document.getElementById('btn-cancel-edit-admin').classList.add('hidden');
+    }
+
     document.getElementById('btn-open-admins').addEventListener('click', () => {
       if (!isSuperAdmin()) {
-        showToast('Akses ditolak. Hanya Super Admin yang dapat mengelola akun guru/admin.', 'error');
+        showToast('Akses ditolak. Hanya Super Admin yang dapat mengelola akun guru.', 'error');
         return;
       }
       resetAdminForm();
@@ -1486,11 +1617,8 @@
 
     document.getElementById('btn-cancel-edit-admin').addEventListener('click', resetAdminForm);
 
-    window.openEditAdminModal = function (id) {
-      if (!isSuperAdmin()) {
-        showToast('Akses ditolak. Hanya Super Admin yang dapat mengubah akun guru/admin.', 'error');
-        return;
-      }
+    window.editAdminGuru = function (id) {
+      if (!isSuperAdmin()) return;
       const adm = state.admins.find((a) => a.id === id);
       if (!adm) return;
       document.getElementById('admin-id').value = adm.id;
@@ -1499,68 +1627,20 @@
       document.getElementById('admin-username').value = adm.username;
       document.getElementById('admin-pin').value = adm.pin;
       document.getElementById('admin-role').value = adm.role === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : 'GURU';
-      document.getElementById('admin-form-title').textContent = 'Edit Akun: ' + adm.nama;
+      document.getElementById('admin-form-title').textContent = `Edit Akun: ${adm.nama}`;
       document.getElementById('btn-save-admin').textContent = 'Perbarui Akun';
       document.getElementById('btn-cancel-edit-admin').classList.remove('hidden');
     };
 
-    document.getElementById('form-admin-guru').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!isSuperAdmin()) {
-        showToast('Akses ditolak. Hanya Super Admin yang dapat menambah atau mengubah akun guru.', 'error');
-        return;
-      }
-      const btn = document.getElementById('btn-save-admin');
-      btn.disabled = true;
-      btn.textContent = 'Menyimpan...';
-
-      const payload = {
-        id: document.getElementById('admin-id').value || '',
-        nama: document.getElementById('admin-nama').value.trim(),
-        mapel: document.getElementById('admin-mapel').value.trim(),
-        username: document.getElementById('admin-username').value.trim().toLowerCase(),
-        pin: document.getElementById('admin-pin').value.trim(),
-        role: document.getElementById('admin-role').value
-      };
-
-      try {
-        if (state.isDemoMode) {
-          const duplicate = state.admins.find(
-            (a) => a.username.toLowerCase() === payload.username && a.id !== payload.id
-          );
-          if (duplicate) throw new Error(`Username "${payload.username}" sudah digunakan.`);
-          if (payload.id) {
-            const idx = state.admins.findIndex((a) => a.id === payload.id);
-            if (idx !== -1) state.admins[idx] = { ...state.admins[idx], ...payload };
-          } else {
-            state.admins.push({ ...payload, id: 'ADM-' + Date.now() });
-          }
-          resetAdminForm();
-          renderAdminList();
-          showToast('Akun guru disimpan di Mode Demo (lokal).', 'success');
-          return;
-        }
-
-        const res = await apiPost('saveAdminGuru', { data: payload });
-        if (!res.success) throw new Error(res.message);
-        resetAdminForm();
-        showToast(res.message || 'Akun guru berhasil disimpan!', 'success');
-        await loadInitialData();
-      } catch (err) {
-        showToast('Gagal menyimpan akun: ' + err.message, 'error');
-      } finally {
-        btn.disabled = false;
-        btn.textContent = document.getElementById('admin-id').value ? 'Perbarui Akun' : 'Simpan Akun Guru';
-      }
-    });
-
-    window.deleteAdminAccount = async function (id) {
+    window.deleteAdminGuru = async function (id) {
       if (!isSuperAdmin()) {
         showToast('Akses ditolak. Hanya Super Admin yang dapat menghapus akun guru.', 'error');
         return;
       }
+      const adm = state.admins.find((a) => a.id === id);
+      if (!adm) return;
       if (state.admins.length <= 1) {
-        showToast('Minimal harus ada 1 akun admin/guru.', 'error');
+        showToast('Minimal harus tersisa 1 akun Admin/Guru.', 'error');
         return;
       }
 
@@ -1568,7 +1648,7 @@
         if (state.isDemoMode) {
           state.admins = state.admins.filter((a) => a.id !== id);
           renderAdminList();
-          showToast('Akun dihapus di Mode Demo (lokal).', 'success');
+          showToast(`Akun ${adm.nama} dihapus (Mode Demo).`, 'success');
           return;
         }
 
@@ -1581,14 +1661,248 @@
       }
     };
 
-    /* ==================== CRUD NILAI SISWA ==================== */
+    document.getElementById('form-admin-guru').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!isSuperAdmin()) {
+        showToast('Akses ditolak. Hanya Super Admin yang dapat menambah atau mengubah akun guru.', 'error');
+        return;
+      }
 
-    document.getElementById('btn-add-nilai').addEventListener('click', () => {
-      document.getElementById('form-nilai').reset();
-      document.getElementById('nilai-id').value = '';
-      document.getElementById('nilai-kkm').value = state.settings.defaultKkm || '75';
-      document.getElementById('modal-nilai-title').textContent = 'Tambah Nilai Siswa';
-      openModal('modal-nilai');
+      const btn = document.getElementById('btn-save-admin');
+      btn.disabled = true;
+      btn.textContent = 'Menyimpan...';
+
+      const payload = {
+        id: document.getElementById('admin-id').value.trim(),
+        nama: document.getElementById('admin-nama').value.trim(),
+        mapel: document.getElementById('admin-mapel').value.trim(),
+        username: document.getElementById('admin-username').value.trim().toLowerCase(),
+        pin: document.getElementById('admin-pin').value.trim(),
+        role: document.getElementById('admin-role').value
+      };
+
+      try {
+        if (state.isDemoMode) {
+          if (payload.id) {
+            const idx = state.admins.findIndex((a) => a.id === payload.id);
+            if (idx !== -1) state.admins[idx] = { ...state.admins[idx], ...payload };
+          } else {
+            state.admins.push({ ...payload, id: 'ADM-' + Date.now() });
+          }
+          resetAdminForm();
+          renderAdminList();
+          showToast('Akun guru disimpan (Mode Demo).', 'success');
+          return;
+        }
+
+        const res = await apiPost('saveAdminGuru', { data: payload });
+        if (!res.success) throw new Error(res.message);
+        resetAdminForm();
+        showToast(res.message || 'Akun guru berhasil disimpan!', 'success');
+        await loadInitialData();
+      } catch (err) {
+        showToast('Gagal menyimpan akun: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Simpan Akun Guru';
+      }
+    });
+
+    /* ==================== CRUD & INPUT BANYAK NILAI SISWA ==================== */
+
+    function updateBatchRowNumbers() {
+      const rows = document.querySelectorAll('#batch-rows-body tr');
+      rows.forEach((tr, idx) => {
+        const numCell = tr.querySelector('.batch-row-num');
+        if (numCell) numCell.textContent = idx + 1;
+      });
+      document.getElementById('batch-row-counter').textContent = `Daftar Siswa (${rows.length} Baris)`;
+    }
+
+    function appendBatchRow(prefill = {}) {
+      const tbody = document.getElementById('batch-rows-body');
+      const tr = document.createElement('tr');
+      tr.className = 'bg-white dark:bg-slate-900/60';
+      tr.innerHTML = `
+        <td class="py-2 px-3 text-center font-bold text-slate-400 batch-row-num">1</td>
+        <td class="py-1.5 px-2">
+          <input type="text" data-field="nisn" value="${escapeHtml(prefill.nisn || '')}" placeholder="0081234501" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+        </td>
+        <td class="py-1.5 px-2">
+          <input type="text" data-field="nama" value="${escapeHtml(prefill.nama || '')}" placeholder="Nama Siswa" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+        </td>
+        <td class="py-1.5 px-2">
+          <input type="number" min="0" max="100" data-field="nilai" value="${prefill.nilai !== undefined && prefill.nilai !== '' ? escapeHtml(prefill.nilai) : ''}" placeholder="0-100" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+        </td>
+        <td class="py-1.5 px-2">
+          <input type="text" data-field="catatan" value="${escapeHtml(prefill.catatan || '')}" placeholder="Opsional" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+        </td>
+        <td class="py-1.5 px-2 text-center">
+          <button type="button" title="Hapus baris" class="btn-remove-batch-row w-7 h-7 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/60 font-bold cursor-pointer">&times;</button>
+        </td>
+      `;
+      tr.querySelector('.btn-remove-batch-row').addEventListener('click', () => {
+        if (tbody.children.length <= 1) {
+          tr.querySelectorAll('input').forEach((inp) => (inp.value = ''));
+        } else {
+          tr.remove();
+          updateBatchRowNumbers();
+        }
+      });
+      tbody.appendChild(tr);
+      updateBatchRowNumbers();
+    }
+
+    function resetBatchModal() {
+      document.getElementById('form-batch-nilai').reset();
+      document.getElementById('batch-kkm').value = state.settings.defaultKkm || '75';
+      const mapelInput = document.getElementById('batch-mapel');
+      const mapelHint = document.getElementById('batch-mapel-hint');
+
+      if (!isSuperAdmin() && state.currentAdmin?.mapel) {
+        const cleanSubj = state.currentAdmin.mapel
+          .replace(/^guru\s+(mata\s+pelajaran|mapel)\s+/i, '')
+          .replace(/^guru\s+/i, '')
+          .trim();
+        mapelInput.value = cleanSubj;
+        mapelHint.textContent = `Wajib sesuai mata pelajaran Anda (${state.currentAdmin.mapel}).`;
+        mapelHint.classList.remove('hidden');
+      } else {
+        mapelHint.classList.add('hidden');
+      }
+
+      document.getElementById('batch-rows-body').innerHTML = '';
+      for (let i = 0; i < 5; i++) appendBatchRow();
+    }
+
+    document.getElementById('btn-batch-nilai').addEventListener('click', () => {
+      resetBatchModal();
+      openModal('modal-batch-nilai');
+    });
+
+    document.getElementById('btn-add-batch-1').addEventListener('click', () => appendBatchRow());
+    document.getElementById('btn-add-batch-5').addEventListener('click', () => {
+      for (let i = 0; i < 5; i++) appendBatchRow();
+    });
+
+    document.getElementById('btn-parse-paste').addEventListener('click', () => {
+      const raw = document.getElementById('batch-paste-area').value.trim();
+      if (!raw) {
+        showToast('Tempel data dari Excel terlebih dahulu pada kotak teks.', 'error');
+        return;
+      }
+
+      const lines = raw.split(/\r?\n/).filter((line) => line.trim());
+      const parsed = [];
+      lines.forEach((line) => {
+        const cols = line.includes('\t') ? line.split('\t') : line.split(';');
+        if (cols.length >= 2) {
+          parsed.push({
+            nisn: (cols[0] || '').trim(),
+            nama: (cols[1] || '').trim(),
+            nilai: (cols[2] || '').trim(),
+            catatan: (cols[3] || '').trim()
+          });
+        }
+      });
+
+      if (parsed.length === 0) {
+        showToast('Format data tidak terbaca. Pastikan minimal berisi kolom NISN dan Nama.', 'error');
+        return;
+      }
+
+      const tbody = document.getElementById('batch-rows-body');
+      // Hapus baris kosong awal jika belum diisi
+      Array.from(tbody.querySelectorAll('tr')).forEach((tr) => {
+        const hasVal = Array.from(tr.querySelectorAll('input')).some((inp) => inp.value.trim() !== '');
+        if (!hasVal) tr.remove();
+      });
+
+      parsed.forEach((item) => appendBatchRow(item));
+      document.getElementById('batch-paste-area').value = '';
+      showToast(`${parsed.length} baris siswa berhasil dimasukkan ke tabel.`, 'success');
+    });
+
+    document.getElementById('form-batch-nilai').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const kelas = document.getElementById('batch-kelas').value.trim();
+      const mapel = document.getElementById('batch-mapel').value.trim();
+      const kkm = Number(document.getElementById('batch-kkm').value);
+
+      if (!isSuperAdmin() && !matchesTeacherMapel(mapel, state.currentAdmin?.mapel)) {
+        showToast(
+          `Nama mapel harus memuat mata pelajaran yang Anda ajar (${state.currentAdmin?.mapel || '-'}).`,
+          'error'
+        );
+        return;
+      }
+
+      const rows = Array.from(document.querySelectorAll('#batch-rows-body tr'));
+      const batchItems = [];
+
+      for (let i = 0; i < rows.length; i++) {
+        const nisn = rows[i].querySelector('[data-field="nisn"]').value.trim();
+        const nama = rows[i].querySelector('[data-field="nama"]').value.trim();
+        const nilaiRaw = rows[i].querySelector('[data-field="nilai"]').value.trim();
+        const catatan = rows[i].querySelector('[data-field="catatan"]').value.trim();
+
+        if (!nisn && !nama && !nilaiRaw && !catatan) continue;
+
+        if (!nisn || !nama || nilaiRaw === '' || isNaN(Number(nilaiRaw))) {
+          showToast(`Baris #${i + 1} belum lengkap (NISN, Nama, dan Nilai wajib diisi).`, 'error');
+          return;
+        }
+
+        batchItems.push({
+          nisn,
+          nama,
+          kelas,
+          mapel,
+          nilai: Number(nilaiRaw),
+          kkm,
+          catatan
+        });
+      }
+
+      if (batchItems.length === 0) {
+        showToast('Isi minimal 1 baris data nilai siswa terlebih dahulu.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('btn-save-batch-nilai');
+      btn.disabled = true;
+      btn.textContent = `Menyimpan ${batchItems.length} data...`;
+
+      try {
+        if (state.isDemoMode) {
+          batchItems.forEach((item, idx) => {
+            const status = item.nilai >= item.kkm ? 'TUNTAS' : 'BELUM TUNTAS';
+            state.records.unshift({
+              ...item,
+              id: 'DEMO-' + Date.now() + '-' + idx,
+              status,
+              linkDrive: ''
+            });
+          });
+          closeModal('modal-batch-nilai');
+          populateKelasFilter();
+          updateStats();
+          renderList();
+          showToast(`${batchItems.length} nilai siswa disimpan di Mode Demo (lokal).`, 'success');
+          return;
+        }
+
+        const res = await apiPost('saveNilaiSiswaBatch', { data: batchItems });
+        if (!res.success) throw new Error(res.message);
+        closeModal('modal-batch-nilai');
+        showToast(res.message || `${batchItems.length} data nilai berhasil disimpan!`, 'success');
+        await loadInitialData();
+      } catch (err) {
+        showToast('Gagal menyimpan banyak nilai: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Simpan Semua Nilai';
+      }
     });
 
     window.openEditNilaiModal = function (id) {
@@ -1608,6 +1922,16 @@
 
     document.getElementById('form-nilai').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const mapelVal = document.getElementById('nilai-mapel').value.trim();
+
+      if (!isSuperAdmin() && !matchesTeacherMapel(mapelVal, state.currentAdmin?.mapel)) {
+        showToast(
+          `Nama mapel harus memuat mata pelajaran yang Anda ajar (${state.currentAdmin?.mapel || '-'}).`,
+          'error'
+        );
+        return;
+      }
+
       const btn = document.getElementById('btn-save-nilai');
       btn.disabled = true;
       btn.textContent = 'Menyimpan...';
@@ -1617,7 +1941,7 @@
         nisn: document.getElementById('nilai-nisn').value.trim(),
         nama: document.getElementById('nilai-nama').value.trim(),
         kelas: document.getElementById('nilai-kelas').value.trim(),
-        mapel: document.getElementById('nilai-mapel').value.trim(),
+        mapel: mapelVal,
         nilai: Number(document.getElementById('nilai-skor').value),
         kkm: Number(document.getElementById('nilai-kkm').value),
         catatan: document.getElementById('nilai-catatan').value.trim()
@@ -1696,6 +2020,10 @@
     /* ==================== PENGATURAN SEKOLAH ==================== */
 
     document.getElementById('btn-open-settings').addEventListener('click', () => {
+      if (!isSuperAdmin()) {
+        showToast('Akses ditolak. Hanya Super Admin yang dapat membuka pengaturan portal.', 'error');
+        return;
+      }
       document.getElementById('set-school-name').value = state.settings.schoolName || 'SMAN 13 GARUT';
       document.getElementById('set-academic-year').value = state.settings.academicYear || '';
       document.getElementById('set-default-kkm').value = state.settings.defaultKkm || '75';
@@ -1706,6 +2034,10 @@
 
     document.getElementById('form-settings').addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!isSuperAdmin()) {
+        showToast('Akses ditolak. Hanya Super Admin yang dapat mengubah Pengaturan.', 'error');
+        return;
+      }
       const btn = document.getElementById('btn-save-settings');
       btn.disabled = true;
       btn.textContent = 'Menyimpan...';
