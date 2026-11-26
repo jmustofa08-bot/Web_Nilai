@@ -3,17 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aplikasi Web</title>
+  <title>Portal Ketuntasan Nilai &amp; Tugas Siswa - SMAN 13 GARUT</title>
 
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    // Konfigurasi font Inter untuk Tailwind CSS
     tailwind.config = {
       theme: {
         extend: {
@@ -25,225 +24,1073 @@
     };
   </script>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans m-0 p-0 w-screen h-[100dvh] overflow-hidden relative select-none">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans min-h-screen flex flex-col antialiased">
 
-  <!-- Layar Memuat (Loading Overlay) -->
-  <div
-    id="loading-overlay"
-    class="fixed inset-0 z-30 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 px-6 transition-opacity duration-500 ease-out"
-    role="status"
-    aria-live="polite"
-  >
-    <div class="w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-lg p-6 text-center space-y-4">
-      <!-- Ikon Spinner -->
-      <div class="mx-auto w-12 h-12 rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-blue-600 dark:border-t-blue-500 animate-spin"></div>
+  <!-- Header Navigasi -->
+  <header class="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+      <!-- Identitas Sekolah -->
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-indigo-700 to-blue-900 text-white flex items-center justify-center shadow-md shadow-indigo-900/20">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <h1 id="header-school-name" class="text-base sm:text-lg font-extrabold tracking-tight text-slate-900 dark:text-white truncate">
+            SMAN 13 GARUT
+          </h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400 truncate">
+            Portal Ketuntasan Nilai &amp; Tugas Siswa
+          </p>
+        </div>
+      </div>
 
-      <div class="space-y-1">
-        <h1 class="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">
-          Menghubungkan ke Aplikasi...
-        </h1>
-        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-          Mohon tunggu sebentar, sedang memuat halaman dari server.
+      <!-- Status Koneksi & Tombol Panel Guru -->
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+        <div
+          id="connection-badge"
+          class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
+        >
+          <span id="connection-dot" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+          <span id="connection-text">Menghubungkan...</span>
+        </div>
+
+        <button
+          id="btn-admin-toggle"
+          type="button"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-colors cursor-pointer"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          <span id="btn-admin-label">Panel Guru</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Banner & Statistik -->
+  <section class="bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-7 sm:py-9 space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="space-y-1.5">
+          <span id="hero-academic-year" class="inline-block px-3 py-1 text-xs font-semibold bg-white/15 text-indigo-100 rounded-full">
+            SMAN 13 GARUT &bull; TA 2026/2027 • Semester Ganjil
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            Portal Ketuntasan Nilai SMAN 13 GARUT
+          </h2>
+          <p class="text-sm text-indigo-100/90 max-w-2xl">
+            Cari nama atau NISN Anda untuk melihat status ketuntasan nilai serta mengunggah bukti tugas remedial langsung ke Google Drive SMAN 13 GARUT.
+          </p>
+        </div>
+
+        <!-- Tombol Muat Ulang -->
+        <button
+          id="btn-refresh"
+          type="button"
+          class="self-start md:self-center inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 text-xs sm:text-sm font-semibold transition-colors cursor-pointer shrink-0"
+        >
+          <svg id="refresh-icon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>Sinkronkan Data</span>
+        </button>
+      </div>
+
+      <!-- Banner Pengumuman -->
+      <div id="announcement-box" class="flex items-start gap-3 p-3.5 sm:p-4 rounded-2xl bg-amber-400/15 border border-amber-300/30 text-amber-100 text-xs sm:text-sm">
+        <svg class="w-5 h-5 text-amber-300 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+        </svg>
+        <p id="announcement-text" class="leading-relaxed">
+          Memuat pengumuman sekolah...
         </p>
       </div>
 
-      <!-- Tombol Alternatif (Muncul otomatis jika pemuatan lambat) -->
-      <div id="slow-load-help" class="hidden pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
-        <p class="text-xs text-amber-600 dark:text-amber-400">
-          Halaman membutuhkan waktu lebih lama atau diblokir oleh pengaturan browser.
-        </p>
-        <a
-          id="fallback-direct-link"
-          href="https://script.google.com/macros/s/AKfycby45JpHe2yDd_wtkbexlroErRg7v85J9rLc2bEZwmB8iGaZf36-SS8sCjpQneZuFy1WIg/exec"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-xl transition-colors shadow-sm"
-        >
-          <span>Buka Langsung di Tab Baru</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+      <!-- Kartu Statistik -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-4">
+          <p class="text-xs text-indigo-200 font-medium">Total Data Nilai</p>
+          <p id="stat-total" class="text-2xl sm:text-3xl font-extrabold mt-1">-</p>
+        </div>
+        <div class="bg-emerald-500/15 backdrop-blur-sm border border-emerald-400/25 rounded-2xl p-4">
+          <p class="text-xs text-emerald-200 font-medium">Tuntas</p>
+          <p id="stat-tuntas" class="text-2xl sm:text-3xl font-extrabold text-emerald-300 mt-1">-</p>
+        </div>
+        <div class="bg-rose-500/15 backdrop-blur-sm border border-rose-400/25 rounded-2xl p-4">
+          <p class="text-xs text-rose-200 font-medium">Belum Tuntas</p>
+          <p id="stat-belum" class="text-2xl sm:text-3xl font-extrabold text-rose-300 mt-1">-</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-4">
+          <p class="text-xs text-indigo-200 font-medium">Persentase Tuntas</p>
+          <p id="stat-persen" class="text-2xl sm:text-3xl font-extrabold mt-1">-</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Konten Utama -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
+
+    <!-- Bar Khusus Admin (Tampil hanya setelah login Panel Guru) -->
+    <section id="admin-toolbar" class="hidden bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 rounded-2xl p-4 sm:p-5">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div>
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300">
+            <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+            Mode Panel Guru / Admin Aktif
+          </span>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-0.5">
+            Kelola nilai siswa, ubah pengaturan sekolah, atau buka database Spreadsheet &amp; Drive.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button
+            id="btn-add-nilai"
+            type="button"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition-colors cursor-pointer"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Tambah Nilai</span>
+          </button>
+
+          <button
+            id="btn-open-settings"
+            type="button"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span>Pengaturan</span>
+          </button>
+
+          <a
+            id="link-spreadsheet"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hidden inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition-colors"
+          >
+            <span>Buka Spreadsheet</span>
+          </a>
+
+          <a
+            id="link-drive-folder"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hidden inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+          >
+            <span>Folder Drive</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Panel Filter & Daftar Data -->
+    <section class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-4 sm:p-6 space-y-5">
+      <!-- Bar Pencarian & Filter -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3">
+        <div class="relative lg:col-span-6">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
-        </a>
+          <input
+            type="search"
+            id="search-input"
+            placeholder="Cari Nama Siswa, NISN, atau Mapel/Tugas..."
+            class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white dark:focus:bg-slate-900 transition"
+          />
+        </div>
+
+        <div class="lg:col-span-3">
+          <select
+            id="filter-kelas"
+            aria-label="Filter Kelas"
+            class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition"
+          >
+            <option value="ALL">Semua Kelas</option>
+          </select>
+        </div>
+
+        <div class="lg:col-span-3">
+          <select
+            id="filter-status"
+            aria-label="Filter Status Ketuntasan"
+            class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition"
+          >
+            <option value="ALL">Semua Status</option>
+            <option value="TUNTAS">Tuntas</option>
+            <option value="BELUM TUNTAS">Belum Tuntas</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loading-state" class="py-12 text-center text-slate-500 dark:text-slate-400">
+        <div class="mx-auto w-9 h-9 rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-indigo-600 animate-spin mb-3"></div>
+        <p class="text-sm font-medium">Mengambil data ketuntasan dari server SMAN 13 GARUT...</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="error-state" class="hidden p-5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-300 text-sm space-y-3">
+        <p class="font-bold">Gagal terhubung ke API Google Apps Script.</p>
+        <p id="error-detail" class="text-xs sm:text-sm leading-relaxed">
+          Pastikan Code.gs sudah diperbarui dan di-deploy ulang dengan akses "Siapa saja (Anyone)".
+        </p>
+        <div class="flex flex-wrap gap-2 pt-1">
+          <button
+            type="button"
+            onclick="loadInitialData()"
+            class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-rose-600 hover:bg-rose-700 text-white cursor-pointer"
+          >
+            Coba Lagi
+          </button>
+          <a
+            href="https://script.google.com/macros/s/AKfycby45JpHe2yDd_wtkbexlroErRg7v85J9rLc2bEZwmB8iGaZf36-SS8sCjpQneZuFy1WIg/exec"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-slate-800 border border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-slate-700"
+          >
+            Buka Link Web App Langsung
+          </a>
+        </div>
+      </div>
+
+      <!-- Tampilan Tabel Desktop -->
+      <div id="table-wrapper" class="hidden md:block overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-100 dark:bg-slate-800/80 text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+              <th class="py-3.5 px-4">Siswa</th>
+              <th class="py-3.5 px-4">Kelas</th>
+              <th class="py-3.5 px-4">Mapel / Tugas</th>
+              <th class="py-3.5 px-4 text-center">Nilai / KKM</th>
+              <th class="py-3.5 px-4 text-center">Status</th>
+              <th class="py-3.5 px-4">Catatan</th>
+              <th class="py-3.5 px-4 text-right">Tugas &amp; Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="table-body" class="divide-y divide-slate-200 dark:divide-slate-800 text-sm"></tbody>
+        </table>
+      </div>
+
+      <!-- Tampilan Kartu Mobile -->
+      <div id="cards-wrapper" class="hidden md:hidden space-y-3"></div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="hidden py-12 text-center rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
+        <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">Tidak ada data nilai yang cocok.</p>
+        <p class="text-xs text-slate-400 mt-1">Coba ubah kata kunci pencarian atau filter kelas/status.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
+      <p>&copy; <span id="current-year"></span> <strong id="footer-school-name">SMAN 13 GARUT</strong>. Portal Ketuntasan Nilai &amp; Tugas Siswa.</p>
+      <p>Terhubung dengan Google Spreadsheet &amp; Google Drive</p>
+    </div>
+  </footer>
+
+  <!-- ==================== MODAL LOGIN PANEL GURU ==================== -->
+  <div id="modal-login" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Masuk Panel Guru</h3>
+        <button type="button" data-close="modal-login" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">&times;</button>
+      </div>
+      <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+        Masukkan PIN Admin untuk mengelola nilai siswa dan pengaturan portal.
+      </p>
+      <form id="form-login" class="space-y-4">
+        <div>
+          <label for="input-pin" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">PIN Admin</label>
+          <input
+            type="password"
+            id="input-pin"
+            required
+            placeholder="Masukkan PIN (default: admin123)"
+            class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-600"
+          />
+        </div>
+        <div class="flex justify-end gap-2">
+          <button type="button" data-close="modal-login" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 cursor-pointer">Batal</button>
+          <button type="submit" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer">Masuk</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL TAMBAH / EDIT NILAI ==================== -->
+  <div id="modal-nilai" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl w-full max-w-lg p-6 space-y-4 my-auto">
+      <div class="flex items-center justify-between">
+        <h3 id="modal-nilai-title" class="text-lg font-bold text-slate-900 dark:text-white">Tambah Nilai Siswa</h3>
+        <button type="button" data-close="modal-nilai" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">&times;</button>
+      </div>
+      <form id="form-nilai" class="space-y-3.5">
+        <input type="hidden" id="nilai-id" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="nilai-nisn" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">NISN *</label>
+            <input type="text" id="nilai-nisn" required placeholder="0081234501" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+          </div>
+          <div>
+            <label for="nilai-kelas" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Kelas *</label>
+            <input type="text" id="nilai-kelas" required placeholder="XI IPA 1" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+          </div>
+        </div>
+        <div>
+          <label for="nilai-nama" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nama Lengkap Siswa *</label>
+          <input type="text" id="nilai-nama" required placeholder="Ahmad Fauzan" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+        </div>
+        <div>
+          <label for="nilai-mapel" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Mata Pelajaran / Tugas *</label>
+          <input type="text" id="nilai-mapel" required placeholder="Matematika - Matriks" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="nilai-skor" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nilai (0-100) *</label>
+            <input type="number" id="nilai-skor" min="0" max="100" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+          </div>
+          <div>
+            <label for="nilai-kkm" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">KKM *</label>
+            <input type="number" id="nilai-kkm" min="0" max="100" required value="75" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+          </div>
+        </div>
+        <div>
+          <label for="nilai-catatan" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Catatan Guru</label>
+          <textarea id="nilai-catatan" rows="2" placeholder="Opsional: keterangan tugas/remedial..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" data-close="modal-nilai" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer">Batal</button>
+          <button id="btn-save-nilai" type="submit" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-60 cursor-pointer">Simpan Nilai</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL UPLOAD TUGAS KE DRIVE ==================== -->
+  <div id="modal-upload" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Unggah Bukti Tugas</h3>
+        <button type="button" data-close="modal-upload" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">&times;</button>
+      </div>
+      <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs space-y-1">
+        <p><span class="text-slate-500">Siswa:</span> <strong id="upload-info-nama">-</strong> (<span id="upload-info-kelas">-</span>)</p>
+        <p><span class="text-slate-500">Tugas:</span> <strong id="upload-info-mapel">-</strong></p>
+      </div>
+      <form id="form-upload" class="space-y-4">
+        <input type="hidden" id="upload-record-id" />
+        <div>
+          <label for="upload-file" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+            Pilih File Tugas (PDF, Foto, atau Dokumen - Maks 8MB)
+          </label>
+          <input
+            type="file"
+            id="upload-file"
+            required
+            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+            class="w-full text-xs sm:text-sm text-slate-600 dark:text-slate-300 file:mr-3 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-indigo-950 dark:file:text-indigo-300 cursor-pointer"
+          />
+        </div>
+        <div class="flex justify-end gap-2">
+          <button type="button" data-close="modal-upload" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer">Batal</button>
+          <button id="btn-submit-upload" type="submit" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-60 cursor-pointer">Unggah ke Drive</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL PENGATURAN SEKOLAH ==================== -->
+  <div id="modal-settings" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl w-full max-w-lg p-6 space-y-4 my-auto">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Pengaturan Portal Sekolah</h3>
+        <button type="button" data-close="modal-settings" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">&times;</button>
+      </div>
+      <form id="form-settings" class="space-y-3.5">
+        <div>
+          <label for="set-school-name" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nama Sekolah</label>
+          <input type="text" id="set-school-name" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+        </div>
+        <div>
+          <label for="set-academic-year" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Tahun Ajaran &amp; Semester</label>
+          <input type="text" id="set-academic-year" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="set-default-kkm" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">KKM Default</label>
+            <input type="number" id="set-default-kkm" min="0" max="100" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+          </div>
+          <div>
+            <label for="set-admin-pin" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">PIN Admin Baru</label>
+            <input type="text" id="set-admin-pin" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+          </div>
+        </div>
+        <div>
+          <label for="set-announcement" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Teks Pengumuman</label>
+          <textarea id="set-announcement" rows="3" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" data-close="modal-settings" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer">Batal</button>
+          <button id="btn-save-settings" type="submit" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-60 cursor-pointer">Simpan Pengaturan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL KONFIRMASI HAPUS ==================== -->
+  <div id="modal-delete" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-4">
+      <h3 class="text-lg font-bold text-slate-900 dark:text-white">Hapus Data Nilai?</h3>
+      <p id="delete-confirm-text" class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+        Data yang dihapus tidak dapat dikembalikan.
+      </p>
+      <div class="flex justify-end gap-2">
+        <button type="button" data-close="modal-delete" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer">Batal</button>
+        <button id="btn-confirm-delete" type="button" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-rose-600 hover:bg-rose-700 text-white disabled:opacity-60 cursor-pointer">Ya, Hapus</button>
       </div>
     </div>
   </div>
 
-  <!-- Iframe Utama untuk Menampilkan Google Apps Script -->
-  <main class="w-full h-full">
-    <iframe
-      id="gas-frame"
-      title="Aplikasi Web Google Apps Script"
-      class="w-full h-full border-0 block bg-white dark:bg-slate-950"
-      allow="camera; microphone; geolocation; fullscreen; clipboard-read; clipboard-write"
-      allowfullscreen
-      loading="eager"
-      referrerpolicy="no-referrer-when-downgrade"
-    ></iframe>
-  </main>
-
-  <!-- Panel Kontrol Mengambang Minimalis (Pojok Kanan Bawah) -->
+  <!-- Notifikasi Toast -->
   <div
-    id="floating-controls"
-    class="fixed bottom-4 right-4 z-20 flex items-center gap-1.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-full p-1.5 shadow-lg transition-all duration-300"
-  >
-    <!-- Tombol Muat Ulang -->
-    <button
-      id="btn-reload"
-      type="button"
-      title="Muat Ulang Halaman"
-      aria-label="Muat Ulang Halaman"
-      class="p-2.5 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors cursor-pointer"
-    >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-      </svg>
-    </button>
-
-    <!-- Tombol Buka di Tab Baru -->
-    <a
-      id="btn-open-external"
-      href="https://script.google.com/macros/s/AKfycby45JpHe2yDd_wtkbexlroErRg7v85J9rLc2bEZwmB8iGaZf36-SS8sCjpQneZuFy1WIg/exec"
-      target="_blank"
-      rel="noopener noreferrer"
-      title="Buka di Tab Baru"
-      aria-label="Buka di Tab Baru"
-      class="p-2.5 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
-    >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-      </svg>
-    </a>
-
-    <!-- Tombol Sembunyikan Panel -->
-    <button
-      id="btn-hide-controls"
-      type="button"
-      title="Sembunyikan Tombol"
-      aria-label="Sembunyikan Tombol"
-      class="p-2.5 text-slate-400 hover:text-rose-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors cursor-pointer"
-    >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
-  </div>
-
-  <!-- Notifikasi Toast (Pengganti alert) -->
-  <div
-    id="toast-message"
-    class="fixed top-4 left-1/2 -translate-x-1/2 z-40 px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs sm:text-sm font-medium shadow-lg opacity-0 pointer-events-none transition-opacity duration-300"
+    id="toast"
     role="alert"
+    class="fixed bottom-5 right-5 z-50 max-w-sm px-4 py-3 rounded-xl shadow-lg text-xs sm:text-sm font-medium text-white bg-slate-900 opacity-0 translate-y-2 pointer-events-none transition-all duration-300"
   >
-    Memuat ulang aplikasi...
+    Notifikasi
   </div>
 
   <script>
     /**
-     * Konfigurasi URL Google Apps Script Web App.
-     * Anda dapat mengubah tautan di bawah ini kapan saja jika melakukan deployment ulang.
+     * URL Web App Google Apps Script milik SMAN 13 GARUT.
      */
     const GAS_WEB_APP_URL =
       'https://script.google.com/macros/s/AKfycby45JpHe2yDd_wtkbexlroErRg7v85J9rLc2bEZwmB8iGaZf36-SS8sCjpQneZuFy1WIg/exec';
 
-    // Elemen DOM
-    const iframeEl = document.getElementById('gas-frame');
-    const loadingOverlay = document.getElementById('loading-overlay');
-    const slowLoadHelp = document.getElementById('slow-load-help');
-    const fallbackDirectLink = document.getElementById('fallback-direct-link');
-    const btnReload = document.getElementById('btn-reload');
-    const btnOpenExternal = document.getElementById('btn-open-external');
-    const btnHideControls = document.getElementById('btn-hide-controls');
-    const floatingControls = document.getElementById('floating-controls');
-    const toastMessage = document.getElementById('toast-message');
+    // State Aplikasi
+    const state = {
+      isAdmin: false,
+      settings: {
+        schoolName: 'SMAN 13 GARUT',
+        academicYear: 'TA 2026/2027 • Semester Ganjil',
+        defaultKkm: '75',
+        adminPin: 'admin123',
+        announcement: ''
+      },
+      records: [],
+      dbLinks: {},
+      pendingDeleteId: null
+    };
 
-    let slowLoadTimer = null;
+    // Referensi Elemen DOM
+    const el = {
+      headerSchoolName: document.getElementById('header-school-name'),
+      footerSchoolName: document.getElementById('footer-school-name'),
+      heroAcademicYear: document.getElementById('hero-academic-year'),
+      announcementText: document.getElementById('announcement-text'),
+      connectionBadge: document.getElementById('connection-badge'),
+      connectionDot: document.getElementById('connection-dot'),
+      connectionText: document.getElementById('connection-text'),
+      btnAdminToggle: document.getElementById('btn-admin-toggle'),
+      btnAdminLabel: document.getElementById('btn-admin-label'),
+      adminToolbar: document.getElementById('admin-toolbar'),
+      linkSpreadsheet: document.getElementById('link-spreadsheet'),
+      linkDriveFolder: document.getElementById('link-drive-folder'),
+      statTotal: document.getElementById('stat-total'),
+      statTuntas: document.getElementById('stat-tuntas'),
+      statBelum: document.getElementById('stat-belum'),
+      statPersen: document.getElementById('stat-persen'),
+      searchInput: document.getElementById('search-input'),
+      filterKelas: document.getElementById('filter-kelas'),
+      filterStatus: document.getElementById('filter-status'),
+      loadingState: document.getElementById('loading-state'),
+      errorState: document.getElementById('error-state'),
+      errorDetail: document.getElementById('error-detail'),
+      tableWrapper: document.getElementById('table-wrapper'),
+      tableBody: document.getElementById('table-body'),
+      cardsWrapper: document.getElementById('cards-wrapper'),
+      emptyState: document.getElementById('empty-state'),
+      refreshIcon: document.getElementById('refresh-icon'),
+      toast: document.getElementById('toast')
+    };
+
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    /* ==================== UTILITY FUNCTIONS ==================== */
+
     let toastTimer = null;
+    function showToast(message, type = 'info') {
+      el.toast.textContent = message;
+      el.toast.className =
+        'fixed bottom-5 right-5 z-50 max-w-sm px-4 py-3 rounded-xl shadow-lg text-xs sm:text-sm font-medium text-white transition-all duration-300';
+      if (type === 'success') el.toast.classList.add('bg-emerald-600');
+      else if (type === 'error') el.toast.classList.add('bg-rose-600');
+      else el.toast.classList.add('bg-slate-900', 'dark:bg-slate-700');
 
-    /**
-     * Menampilkan pesan notifikasi singkat (toast).
-     * @param {string} text - Pesan yang akan ditampilkan.
-     */
-    function showToast(text) {
+      requestAnimationFrame(() => {
+        el.toast.classList.remove('opacity-0', 'translate-y-2', 'pointer-events-none');
+        el.toast.classList.add('opacity-100', 'translate-y-0');
+      });
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        el.toast.classList.remove('opacity-100', 'translate-y-0');
+        el.toast.classList.add('opacity-0', 'translate-y-2', 'pointer-events-none');
+      }, 3600);
+    }
+
+    function setConnectionStatus(status) {
+      if (status === 'connected') {
+        el.connectionBadge.className =
+          'hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300';
+        el.connectionDot.className = 'w-2 h-2 rounded-full bg-emerald-500';
+        el.connectionText.textContent = 'Terhubung';
+      } else if (status === 'error') {
+        el.connectionBadge.className =
+          'hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300';
+        el.connectionDot.className = 'w-2 h-2 rounded-full bg-rose-500';
+        el.connectionText.textContent = 'Terputus';
+      } else {
+        el.connectionBadge.className =
+          'hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300';
+        el.connectionDot.className = 'w-2 h-2 rounded-full bg-amber-500 animate-pulse';
+        el.connectionText.textContent = 'Menghubungkan...';
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    // Tutup modal lewat tombol close
+    document.querySelectorAll('[data-close]').forEach((btn) => {
+      btn.addEventListener('click', () => closeModal(btn.getAttribute('data-close')));
+    });
+
+    /* ==================== API COMMUNICATION ==================== */
+
+    async function parseJsonSafe(response) {
+      const text = await response.text();
       try {
-        toastMessage.textContent = text;
-        toastMessage.classList.remove('opacity-0');
-        toastMessage.classList.add('opacity-100');
-
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => {
-          toastMessage.classList.remove('opacity-100');
-          toastMessage.classList.add('opacity-0');
-        }, 2500);
-      } catch (error) {
-        console.error('Gagal menampilkan notifikasi:', error);
+        return JSON.parse(text);
+      } catch (e) {
+        throw new Error(
+          'Server mengembalikan halaman HTML, bukan JSON. Pastikan Code.gs sudah di-deploy sebagai versi baru dengan akses "Siapa saja (Anyone)".'
+        );
       }
     }
 
-    /**
-     * Menyembunyikan layar loading dengan efek transisi halus.
-     */
-    function hideLoader() {
-      clearTimeout(slowLoadTimer);
-      loadingOverlay.classList.add('opacity-0', 'pointer-events-none');
-      setTimeout(() => {
-        loadingOverlay.classList.add('hidden');
-      }, 500);
+    async function apiGet(actiaon) {
+      const response = await fetch(`${GAS_WEB_APP_URL}?action=${encodeURIComponent(action)}`, {
+        method: 'GET',
+        redirect: 'follow'
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return parseJsonSafe(response);
     }
 
-    /**
-     * Memuat URL Google Apps Script ke dalam iframe,
-     * termasuk meneruskan parameter query (?id=..., dll) dari URL GitHub Pages jika ada.
-     */
-    function loadApp() {
+    async function apiPost(action, payload = {}) {
+      const response = await fetch(GAS_WEB_APP_URL, {
+        method: 'POST',
+        redirect: 'follow',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify({ action, ...payload })
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return parseJsonSafe(response);
+    }
+
+    /* ==================== LOAD & RENDER DATA ==================== */
+
+    async function loadInitialData() {
+      setConnectionStatus('loading');
+      el.refreshIcon.classList.add('animate-spin');
+      el.errorState.classList.add('hidden');
+      if (state.records.length === 0) {
+        el.loadingState.classList.remove('hidden');
+        el.tableWrapper.classList.add('hidden');
+        el.cardsWrapper.classList.add('hidden');
+        el.emptyState.classList.add('hidden');
+      }
+
       try {
-        const currentParams = window.location.search;
-        const targetUrl = currentParams
-          ? `${GAS_WEB_APP_URL}${currentParams}`
-          : GAS_WEB_APP_URL;
+        const res = await apiGet('getInitialData');
+        if (!res.success) throw new Error(res.message || 'Gagal memuat data.');
 
-        // Perbarui tautan langsung
-        fallbackDirectLink.href = targetUrl;
-        btnOpenExternal.href = targetUrl;
+        state.settings = { ...state.settings, ...(res.settings || {}) };
+        state.records = Array.isArray(res.records) ? res.records : [];
+        state.dbLinks = res.dbLinks || {};
 
-        // Tampilkan layar loading
-        loadingOverlay.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
-        slowLoadHelp.classList.add('hidden');
-
-        // Tampilkan bantuan jika pemuatan melebihi 8 detik
-        clearTimeout(slowLoadTimer);
-        slowLoadTimer = setTimeout(() => {
-          slowLoadHelp.classList.remove('hidden');
-        }, 8000);
-
-        // Muat URL ke iframe
-        iframeEl.src = targetUrl;
-      } catch (error) {
-        console.error('Terjadi kesalahan saat memuat aplikasi:', error);
-        slowLoadHelp.classList.remove('hidden');
-        showToast('Gagal memuat tautan aplikasi.');
+        applySettingsToUI();
+        populateKelasFilter();
+        updateStats();
+        renderList();
+        setConnectionStatus('connected');
+      } catch (err) {
+        console.error(err);
+        setConnectionStatus('error');
+        el.loadingState.classList.add('hidden');
+        el.errorState.classList.remove('hidden');
+        el.errorDetail.textContent = err.message;
+      } finally {
+        el.loadingState.classList.add('hidden');
+        el.refreshIcon.classList.remove('animate-spin');
       }
     }
 
-    // Event: Ketika iframe selesai dimuat
-    iframeEl.addEventListener('load', () => {
-      if (iframeEl.src) {
-        hideLoader();
+    function applySettingsToUI() {
+      const schoolName = state.settings.schoolName || 'SMAN 13 GARUT';
+      el.headerSchoolName.textContent = schoolName;
+      el.footerSchoolName.textContent = schoolName;
+      document.title = `Portal Ketuntasan Nilai & Tugas Siswa - ${schoolName}`;
+      el.heroAcademicYear.textContent = state.settings.academicYear || 'TA 2026/2027';
+      el.announcementText.textContent =
+        state.settings.announcement || 'Belum ada pengumuman terbaru.';
+
+      if (state.dbLinks.spreadsheetUrl) {
+        el.linkSpreadsheet.href = state.dbLinks.spreadsheetUrl;
+        el.linkSpreadsheet.classList.remove('hidden');
+      }
+      if (state.dbLinks.folderUrl) {
+        el.linkDriveFolder.href = state.dbLinks.folderUrl;
+        el.linkDriveFolder.classList.remove('hidden');
+      }
+    }
+
+    function populateKelasFilter() {
+      const currentVal = el.filterKelas.value;
+      const kelasSet = [...new Set(state.records.map((r) => r.kelas).filter(Boolean))].sort();
+      el.filterKelas.innerHTML = '<option value="ALL">Semua Kelas</option>';
+      kelasSet.forEach((k) => {
+        const opt = document.createElement('option');
+        opt.value = k;
+        opt.textContent = k;
+        el.filterKelas.appendChild(opt);
+      });
+      if (kelasSet.includes(currentVal)) el.filterKelas.value = currentVal;
+    }
+
+    function updateStats() {
+      const total = state.records.length;
+      const tuntas = state.records.filter((r) => r.status === 'TUNTAS').length;
+      const belum = total - tuntas;
+      const persen = total > 0 ? Math.round((tuntas / total) * 100) : 0;
+
+      el.statTotal.textContent = total;
+      el.statTuntas.textContent = tuntas;
+      el.statBelum.textContent = belum;
+      el.statPersen.textContent = persen + '%';
+    }
+
+    function getFilteredRecords() {
+      const q = el.searchInput.value.trim().toLowerCase();
+      const kelas = el.filterKelas.value;
+      const status = el.filterStatus.value;
+
+      return state.records.filter((r) => {
+        const matchKelas = kelas === 'ALL' || r.kelas === kelas;
+        const matchStatus = status === 'ALL' || r.status === status;
+        const matchQ =
+          !q ||
+          (r.nama || '').toLowerCase().includes(q) ||
+          (r.nisn || '').toLowerCase().includes(q) ||
+          (r.mapel || '').toLowerCase().includes(q) ||
+          (r.kelas || '').toLowerCase().includes(q);
+        return matchKelas && matchStatus && matchQ;
+      });
+    }
+
+    function renderList() {
+      const list = getFilteredRecords();
+
+      if (list.length === 0) {
+        el.tableWrapper.classList.add('hidden');
+        el.cardsWrapper.classList.add('hidden');
+        el.emptyState.classList.remove('hidden');
+        return;
+      }
+
+      el.emptyState.classList.add('hidden');
+      el.tableWrapper.classList.remove('hidden');
+      el.cardsWrapper.classList.remove('hidden');
+
+      // Render Tabel Desktop
+      el.tableBody.innerHTML = list
+        .map((r) => {
+          const isTuntas = r.status === 'TUNTAS';
+          const badgeClass = isTuntas
+            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300'
+            : 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300';
+
+          return `
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+              <td class="py-3.5 px-4">
+                <p class="font-semibold text-slate-900 dark:text-white">${escapeHtml(r.nama)}</p>
+                <p class="text-xs text-slate-500">NISN: ${escapeHtml(r.nisn)}</p>
+              </td>
+              <td class="py-3.5 px-4 whitespace-nowrap text-slate-700 dark:text-slate-300">${escapeHtml(r.kelas)}</td>
+              <td class="py-3.5 px-4 font-medium text-slate-800 dark:text-slate-200">${escapeHtml(r.mapel)}</td>
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                <span class="text-base font-bold ${isTuntas ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">${r.nilai}</span>
+                <span class="text-xs text-slate-400">/ ${r.kkm}</span>
+              </td>
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                <span class="inline-block px-2.5 py-1 text-[11px] font-bold rounded-full ${badgeClass}">
+                  ${escapeHtml(r.status)}
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-xs text-slate-600 dark:text-slate-400 max-w-[200px]">
+                ${escapeHtml(r.catatan || '-')}
+              </td>
+              <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                <div class="inline-flex items-center gap-1.5">
+                  ${
+                    r.linkDrive
+                      ? `<a href="${escapeHtml(r.linkDrive)}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/40 dark:text-blue-300">Lihat File</a>`
+                      : ''
+                  }
+                  <button type="button" onclick="openUploadModal('${escapeHtml(r.id)}')" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-900/40 dark:text-indigo-300 cursor-pointer">
+                    ${r.linkDrive ? 'Ubah File' : 'Upload Tugas'}
+                  </button>
+                  ${
+                    state.isAdmin
+                      ? `
+                        <button type="button" onclick="openEditNilaiModal('${escapeHtml(r.id)}')" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-900/40 dark:text-amber-300 cursor-pointer">Edit</button>
+                        <button type="button" onclick="openDeleteModal('${escapeHtml(r.id)}')" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-900/40 dark:text-rose-300 cursor-pointer">Hapus</button>
+                      `
+                      : ''
+                  }
+                </div>
+              </td>
+            </tr>
+          `;
+        })
+        .join('');
+
+      // Render Kartu Mobile
+      el.cardsWrapper.innerHTML = list
+        .map((r) => {
+          const isTuntas = r.status === 'TUNTAS';
+          const badgeClass = isTuntas
+            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300'
+            : 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300';
+
+          return `
+            <article class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 space-y-3">
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <h4 class="text-sm font-bold text-slate-900 dark:text-white">${escapeHtml(r.nama)}</h4>
+                  <p class="text-xs text-slate-500">NISN: ${escapeHtml(r.nisn)} &bull; ${escapeHtml(r.kelas)}</p>
+                </div>
+                <span class="px-2.5 py-1 text-[11px] font-bold rounded-full shrink-0 ${badgeClass}">
+                  ${escapeHtml(r.status)}
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between gap-2 py-2 px-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <p class="text-xs font-semibold text-slate-800 dark:text-slate-200">${escapeHtml(r.mapel)}</p>
+                <p class="text-sm font-extrabold shrink-0 ${isTuntas ? 'text-emerald-600' : 'text-rose-600'}">
+                  ${r.nilai} <span class="text-xs font-normal text-slate-400">/ KKM ${r.kkm}</span>
+                </p>
+              </div>
+
+              ${
+                r.catatan
+                  ? `<p class="text-xs text-slate-600 dark:text-slate-400">Catatan: ${escapeHtml(r.catatan)}</p>`
+                  : ''
+              }
+
+              <div class="flex flex-wrap items-center gap-2 pt-1">
+                ${
+                  r.linkDrive
+                    ? `<a href="${escapeHtml(r.linkDrive)}" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 text-white">Lihat File Drive</a>`
+                    : ''
+                }
+                <button type="button" onclick="openUploadModal('${escapeHtml(r.id)}')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white cursor-pointer">
+                  ${r.linkDrive ? 'Unggah Ulang' : 'Upload Tugas'}
+                </button>
+                ${
+                  state.isAdmin
+                    ? `
+                      <button type="button" onclick="openEditNilaiModal('${escapeHtml(r.id)}')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-amber-500 text-white cursor-pointer">Edit</button>
+                      <button type="button" onclick="openDeleteModal('${escapeHtml(r.id)}')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-rose-600 text-white cursor-pointer">Hapus</button>
+                    `
+                    : ''
+                }
+              </div>
+            </article>
+          `;
+        })
+        .join('');
+    }
+
+    /* ==================== ADMIN LOGIN / LOGOUT ==================== */
+
+    el.btnAdminToggle.addEventListener('click', () => {
+      if (state.isAdmin) {
+        state.isAdmin = false;
+        el.adminToolbar.classList.add('hidden');
+        el.btnAdminLabel.textContent = 'Panel Guru';
+        renderList();
+        showToast('Keluar dari Panel Guru.', 'info');
+      } else {
+        document.getElementById('input-pin').value = '';
+        openModal('modal-login');
+        setTimeout(() => document.getElementById('input-pin').focus(), 100);
       }
     });
 
-    // Event: Tombol muat ulang
-    btnReload.addEventListener('click', () => {
-      showToast('Memuat ulang aplikasi...');
-      loadApp();
+    document.getElementById('form-login').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const enteredPin = document.getElementById('input-pin').value.trim();
+      const validPin = String(state.settings.adminPin || 'admin123').trim();
+
+      if (enteredPin === validPin) {
+        state.isAdmin = true;
+        closeModal('modal-login');
+        el.adminToolbar.classList.remove('hidden');
+        el.btnAdminLabel.textContent = 'Keluar Admin';
+        renderList();
+        showToast('Berhasil masuk ke Panel Guru.', 'success');
+      } else {
+        showToast('PIN Admin salah. Silakan coba lagi.', 'error');
+      }
     });
 
-    // Event: Sembunyikan panel kontrol mengambang agar tidak mengganggu tampilan
-    btnHideControls.addEventListener('click', () => {
-      floatingControls.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
+    /* ==================== CRUD NILAI (TAMBAH / EDIT / HAPUS) ==================== */
+
+    document.getElementById('btn-add-nilai').addEventListener('click', () => {
+      document.getElementById('modal-nilai-title').textContent = 'Tambah Nilai Siswa';
+      document.getElementById('form-nilai').reset();
+      document.getElementById('nilai-id').value = '';
+      document.getElementById('nilai-kkm').value = state.settings.defaultKkm || '75';
+      openModal('modal-nilai');
     });
 
-    // Jalankan pemuatan aplikasi saat halaman siap
-    window.addEventListener('DOMContentLoaded', loadApp);
+    window.openEditNilaiModal = function (id) {
+      const rec = state.records.find((r) => r.id === id);
+      if (!rec) return;
+      document.getElementById('modal-nilai-title').textContent = 'Edit Nilai Siswa';
+      document.getElementById('nilai-id').value = rec.id;
+      document.getElementById('nilai-nisn').value = rec.nisn;
+      document.getElementById('nilai-nama').value = rec.nama;
+      document.getElementById('nilai-kelas').value = rec.kelas;
+      document.getElementById('nilai-mapel').value = rec.mapel;
+      document.getElementById('nilai-skor').value = rec.nilai;
+      document.getElementById('nilai-kkm').value = rec.kkm;
+      document.getElementById('nilai-catatan').value = rec.catatan || '';
+      openModal('modal-nilai');
+    };
+
+    document.getElementById('form-nilai').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-nilai');
+      btn.disabled = true;
+      btn.textContent = 'Menyimpan...';
+
+      const payload = {
+        id: document.getElementById('nilai-id').value || '',
+        nisn: document.getElementById('nilai-nisn').value.trim(),
+        nama: document.getElementById('nilai-nama').value.trim(),
+        kelas: document.getElementById('nilai-kelas').value.trim(),
+        mapel: document.getElementById('nilai-mapel').value.trim(),
+        nilai: Number(document.getElementById('nilai-skor').value),
+        kkm: Number(document.getElementById('nilai-kkm').value),
+        catatan: document.getElementById('nilai-catatan').value.trim()
+      };
+
+      try {
+        const res = await apiPost('saveNilaiSiswa', { data: payload });
+        if (!res.success) throw new Error(res.message);
+        closeModal('modal-nilai');
+        showToast(res.message || 'Data nilai tersimpan!', 'success');
+        await loadInitialData();
+      } catch (err) {
+        showToast('Gagal menyimpan: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Simpan Nilai';
+      }
+    });
+
+    window.openDeleteModal = function (id) {
+      const rec = state.records.find((r) => r.id === id);
+      if (!rec) return;
+      state.pendingDeleteId = id;
+      document.getElementById('delete-confirm-text').textContent =
+        `Hapus nilai ${rec.nama} (${rec.mapel}) dari Spreadsheet?`;
+      openModal('modal-delete');
+    };
+
+    document.getElementById('btn-confirm-delete').addEventListener('click', async () => {
+      if (!state.pendingDeleteId) return;
+      const btn = document.getElementById('btn-confirm-delete');
+      btn.disabled = true;
+      btn.textContent = 'Menghapus...';
+
+      try {
+        const res = await apiPost('deleteNilaiSiswa', { id: state.pendingDeleteId });
+        if (!res.success) throw new Error(res.message);
+        closeModal('modal-delete');
+        showToast(res.message || 'Data dihapus.', 'success');
+        await loadInitialData();
+      } catch (err) {
+        showToast('Gagal menghapus: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Ya, Hapus';
+        state.pendingDeleteId = null;
+      }
+    });
+
+    /* ==================== PENGATURAN SEKOLAH ==================== */
+
+    document.getElementById('btn-open-settings').addEventListener('click', () => {
+      document.getElementById('set-school-name').value = state.settings.schoolName || 'SMAN 13 GARUT';
+      document.getElementById('set-academic-year').value = state.settings.academicYear || '';
+      document.getElementById('set-default-kkm').value = state.settings.defaultKkm || '75';
+      document.getElementById('set-admin-pin').value = state.settings.adminPin || 'admin123';
+      document.getElementById('set-announcement').value = state.settings.announcement || '';
+      openModal('modal-settings');
+    });
+
+    document.getElementById('form-settings').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-settings');
+      btn.disabled = true;
+      btn.textContent = 'Menyimpan...';
+
+      const newSettings = {
+        schoolName: document.getElementById('set-school-name').value.trim(),
+        academicYear: document.getElementById('set-academic-year').value.trim(),
+        defaultKkm: document.getElementById('set-default-kkm').value.trim(),
+        adminPin: document.getElementById('set-admin-pin').value.trim(),
+        announcement: document.getElementById('set-announcement').value.trim()
+      };
+
+      try {
+        const res = await apiPost('updatePengaturan', { data: newSettings });
+        if (!res.success) throw new Error(res.message);
+        closeModal('modal-settings');
+        showToast(res.message || 'Pengaturan diperbarui!', 'success');
+        await loadInitialData();
+      } catch (err) {
+        showToast('Gagal menyimpan pengaturan: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Simpan Pengaturan';
+      }
+    });
+
+    /* ==================== UPLOAD TUGAS KE GOOGLE DRIVE ==================== */
+
+    window.openUploadModal = function (id) {
+      const rec = state.records.find((r) => r.id === id);
+      if (!rec) return;
+      document.getElementById('form-upload').reset();
+      document.getElementById('upload-record-id').value = rec.id;
+      document.getElementById('upload-info-nama').textContent = rec.nama;
+      document.getElementById('upload-info-kelas').textContent = rec.kelas;
+      document.getElementById('upload-info-mapel').textContent = rec.mapel;
+      openModal('modal-upload');
+    };
+
+    document.getElementById('form-upload').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const recordId = document.getElementById('upload-record-id').value;
+      const rec = state.records.find((r) => r.id === recordId);
+      const fileInput = document.getElementById('upload-file');
+      const file = fileInput.files[0];
+
+      if (!rec || !file) {
+        showToast('Silakan pilih file terlebih dahulu.', 'error');
+        return;
+      }
+
+      if (file.size > 8 * 1024 * 1024) {
+        showToast('Ukuran file melebihi batas maksimal 8MB.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('btn-submit-upload');
+      btn.disabled = true;
+      btn.textContent = 'Mengunggah...';
+
+      try {
+        const base64Data = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const result = String(reader.result || '');
+            resolve(result.split(',')[1] || '');
+          };
+          reader.onerror = () => reject(new Error('Gagal membaca file.'));
+          reader.readAsDataURL(file);
+        });
+
+        const res = await apiPost('uploadTugasKeDrive', {
+          data: {
+            recordId: rec.id,
+            nama: rec.nama,
+            kelas: rec.kelas,
+            fileName: file.name,
+            mimeType: file.type || 'application/octet-stream',
+            base64Data
+          }
+        });
+
+        if (!res.success) throw new Error(res.message);
+        closeModal('modal-upload');
+        showToast(res.message || 'Tugas berhasil diunggah ke Google Drive!', 'success');
+        await loadInitialData();
+      } catch (err) {
+        showToast('Gagal mengunggah tugas: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Unggah ke Drive';
+      }
+    });
+
+    /* ==================== EVENT LISTENERS ==================== */
+
+    el.searchInput.addEventListener('input', renderList);
+    el.filterKelas.addEventListener('change', renderList);
+    el.filterStatus.addEventListener('change', renderList);
+    document.getElementById('btn-refresh').addEventListener('click', () => {
+      showToast('Menyinkronkan data terbaru...', 'info');
+      loadInitialData();
+    });
+
+    // Muat data otomatis saat halaman dibuka
+    window.addEventListener('DOMContentLoaded', loadInitialData);
   </script>
 </body>
 </html>
