@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,31 +8,64 @@
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
           },
+          keyframes: {
+            marquee: {
+              '0%': { transform: 'translateX(0%)' },
+              '100%': { transform: 'translateX(-100%)' },
+            },
+            floatSlow: {
+              '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(24px, -18px) scale(1.06)' },
+              '66%': { transform: 'translate(-18px, 14px) scale(0.96)' },
+            },
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(12px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+          },
+          animation: {
+            marquee: 'marquee 24s linear infinite',
+            'float-slow': 'floatSlow 12s ease-in-out infinite',
+            'float-slower': 'floatSlow 16s ease-in-out infinite reverse',
+            'fade-in-up': 'fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+          },
         },
       },
     };
+
+    // Inisialisasi tema Gelap/Terang sebelum halaman dirender agar tidak berkedip
+    (function () {
+      try {
+        const saved = localStorage.getItem('sman13_theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (saved === 'dark' || (!saved && prefersDark)) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    })();
   </script>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans min-h-screen flex flex-col antialiased">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-indigo-500/20 selection:text-indigo-700 dark:selection:text-indigo-300">
 
-  <!-- Header Navigasi -->
-  <header class="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+  <!-- ==================== HEADER NAVIGASI ==================== -->
+  <header class="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 transition-colors">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
       <!-- Identitas Sekolah -->
       <div class="flex items-center gap-3 min-w-0">
-        <div class="shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-indigo-700 to-blue-900 text-white flex items-center justify-center shadow-md shadow-indigo-900/20">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true">
+        <div class="shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-indigo-600 via-blue-600 to-cyan-500 text-white flex items-center justify-center shadow-lg shadow-indigo-600/25 ring-2 ring-white/20">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
           </svg>
@@ -41,26 +74,44 @@
           <h1 id="header-school-name" class="text-base sm:text-lg font-extrabold tracking-tight text-slate-900 dark:text-white truncate">
             SMAN 13 GARUT
           </h1>
-          <p class="text-xs text-slate-500 dark:text-slate-400 truncate">
+          <p class="text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 truncate">
             Portal Ketuntasan Nilai &amp; Tugas Siswa
           </p>
         </div>
       </div>
 
-      <!-- Status Koneksi & Tombol Panel Guru -->
-      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+      <!-- Status Koneksi, Tombol Tema & Panel Guru -->
+      <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
         <div
           id="connection-badge"
-          class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
+          class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-100/90 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200/70 dark:border-amber-800/60"
         >
           <span id="connection-dot" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
           <span id="connection-text">Menghubungkan...</span>
         </div>
 
+        <!-- Tombol Ganti Tema (Gelap/Terang) -->
+        <button
+          id="btn-theme-toggle"
+          type="button"
+          title="Ganti Mode Gelap / Terang"
+          aria-label="Ganti Mode Gelap / Terang"
+          class="p-2 sm:p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer"
+        >
+          <!-- Ikon Matahari (tampil di dark mode) -->
+          <svg class="hidden dark:block w-4 h-4 sm:w-5 sm:h-5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <!-- Ikon Bulan (tampil di light mode) -->
+          <svg class="block dark:hidden w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
         <button
           id="btn-admin-toggle"
           type="button"
-          class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-colors cursor-pointer"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white shadow-md shadow-indigo-600/20 transition-all active:scale-95 cursor-pointer"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -71,19 +122,27 @@
     </div>
   </header>
 
-  <!-- Hero Banner & Statistik -->
-  <section class="bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-7 sm:py-9 space-y-6">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div class="space-y-1.5">
-          <span id="hero-academic-year" class="inline-block px-3 py-1 text-xs font-semibold bg-white/15 text-indigo-100 rounded-full">
-            SMAN 13 GARUT &bull; TA 2026/2027 • Semester Ganjil
-          </span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+  <!-- ==================== HERO BANNER DINAMIS & STATISTIK ==================== -->
+  <section class="relative overflow-hidden bg-slate-950 text-white">
+    <!-- Latar Gradien & Ambient Orbs Beranimasi -->
+    <div class="absolute inset-0 bg-gradient-to-br from-indigo-950 via-blue-950 to-slate-950"></div>
+    <div class="pointer-events-none absolute -top-24 -left-24 w-80 h-80 rounded-full bg-indigo-500/25 blur-3xl animate-float-slow"></div>
+    <div class="pointer-events-none absolute top-1/2 -right-24 w-96 h-96 rounded-full bg-cyan-500/20 blur-3xl animate-float-slower"></div>
+    <div class="pointer-events-none absolute -bottom-24 left-1/3 w-72 h-72 rounded-full bg-blue-600/20 blur-3xl animate-float-slow"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-6">
+      <!-- Baris Judul & Tombol Sinkronisasi -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-5">
+        <div class="space-y-2.5">
+          <div class="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold bg-white/10 backdrop-blur-md border border-white/15 text-cyan-200 rounded-full">
+            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+            <span id="hero-academic-year">SMAN 13 GARUT &bull; TA 2026/2027 &bull; Semester Ganjil</span>
+          </div>
+          <h2 class="text-2xl sm:text-4xl font-black tracking-tight bg-gradient-to-r from-white via-indigo-100 to-cyan-200 bg-clip-text text-transparent">
             Portal Ketuntasan Nilai SMAN 13 GARUT
           </h2>
-          <p class="text-sm text-indigo-100/90 max-w-2xl">
-            Cari nama atau NISN Anda untuk melihat status ketuntasan nilai serta mengunggah bukti tugas remedial langsung ke Google Drive SMAN 13 GARUT.
+          <p class="text-xs sm:text-sm text-indigo-100/80 max-w-2xl leading-relaxed">
+            Pantau status ketuntasan nilai secara real-time dan unggah bukti tugas remedial langsung ke Google Drive sekolah cukup dengan memasukkan NISN Anda.
           </p>
         </div>
 
@@ -91,70 +150,123 @@
         <button
           id="btn-refresh"
           type="button"
-          class="self-start md:self-center inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 text-xs sm:text-sm font-semibold transition-colors cursor-pointer shrink-0"
+          class="self-start md:self-end inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-black/10 transition-all active:scale-95 cursor-pointer shrink-0"
         >
-          <svg id="refresh-icon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <svg id="refresh-icon" class="w-4 h-4 text-cyan-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
           <span>Sinkronkan Data</span>
         </button>
       </div>
 
-      <!-- Banner Pengumuman -->
-      <div id="announcement-box" class="flex items-start gap-3 p-3.5 sm:p-4 rounded-2xl bg-amber-400/15 border border-amber-300/30 text-amber-100 text-xs sm:text-sm">
-        <svg class="w-5 h-5 text-amber-300 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
-        </svg>
-        <p id="announcement-text" class="leading-relaxed">
-          Memuat pengumuman sekolah...
-        </p>
+      <!-- Banner Pengumuman (Teks Berjalan / Marquee) -->
+      <div id="announcement-box" class="flex items-center gap-3 p-2.5 sm:p-3 rounded-2xl bg-gradient-to-r from-amber-500/20 via-amber-400/10 to-orange-500/15 backdrop-blur-md border border-amber-300/30 text-amber-100 text-xs sm:text-sm overflow-hidden shadow-inner">
+        <span class="shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-amber-400 text-slate-950 text-[11px] font-extrabold uppercase tracking-wider shadow-sm">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+          </svg>
+          <span>Info</span>
+        </span>
+        <div class="flex-1 min-w-0 overflow-hidden">
+          <p id="announcement-text" class="inline-block whitespace-nowrap pl-[100%] animate-marquee hover:[animation-play-state:paused] font-medium leading-relaxed text-amber-50">
+            Memuat pengumuman sekolah...
+          </p>
+        </div>
       </div>
 
-      <!-- Kartu Statistik -->
+      <!-- Kartu Statistik Glassmorphism -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div class="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-4">
-          <p class="text-xs text-indigo-200 font-medium">Total Data Nilai</p>
-          <p id="stat-total" class="text-2xl sm:text-3xl font-extrabold mt-1">-</p>
+        <!-- Total Data -->
+        <div class="group bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/15 rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-950/30">
+          <div class="flex items-center justify-between">
+            <p class="text-xs font-semibold text-indigo-200">Total Data Nilai</p>
+            <div class="w-8 h-8 rounded-xl bg-indigo-400/20 text-indigo-200 flex items-center justify-center">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+          </div>
+          <p id="stat-total" class="text-2xl sm:text-3xl font-black mt-2 tracking-tight">-</p>
+          <p class="text-[11px] text-indigo-200/70 mt-1">Tercatat di Spreadsheet</p>
         </div>
-        <div class="bg-emerald-500/15 backdrop-blur-sm border border-emerald-400/25 rounded-2xl p-4">
-          <p class="text-xs text-emerald-200 font-medium">Tuntas</p>
-          <p id="stat-tuntas" class="text-2xl sm:text-3xl font-extrabold text-emerald-300 mt-1">-</p>
+
+        <!-- Tuntas -->
+        <div class="group bg-emerald-500/15 hover:bg-emerald-500/20 backdrop-blur-md border border-emerald-400/25 rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-950/30">
+          <div class="flex items-center justify-between">
+            <p class="text-xs font-semibold text-emerald-200">Tuntas</p>
+            <div class="w-8 h-8 rounded-xl bg-emerald-400/20 text-emerald-300 flex items-center justify-center">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+          <p id="stat-tuntas" class="text-2xl sm:text-3xl font-black text-emerald-300 mt-2 tracking-tight">-</p>
+          <p class="text-[11px] text-emerald-200/70 mt-1">Memenuhi standar KKM</p>
         </div>
-        <div class="bg-rose-500/15 backdrop-blur-sm border border-rose-400/25 rounded-2xl p-4">
-          <p class="text-xs text-rose-200 font-medium">Belum Tuntas</p>
-          <p id="stat-belum" class="text-2xl sm:text-3xl font-extrabold text-rose-300 mt-1">-</p>
+
+        <!-- Belum Tuntas -->
+        <div class="group bg-rose-500/15 hover:bg-rose-500/20 backdrop-blur-md border border-rose-400/25 rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-rose-950/30">
+          <div class="flex items-center justify-between">
+            <p class="text-xs font-semibold text-rose-200">Belum Tuntas</p>
+            <div class="w-8 h-8 rounded-xl bg-rose-400/20 text-rose-300 flex items-center justify-center">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+          <p id="stat-belum" class="text-2xl sm:text-3xl font-black text-rose-300 mt-2 tracking-tight">-</p>
+          <p class="text-[11px] text-rose-200/70 mt-1">Perlu perbaikan / remedial</p>
         </div>
-        <div class="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-4">
-          <p class="text-xs text-indigo-200 font-medium">Persentase Tuntas</p>
-          <p id="stat-persen" class="text-2xl sm:text-3xl font-extrabold mt-1">-</p>
+
+        <!-- Persentase Tuntas + Progress Bar -->
+        <div class="group bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/15 rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-cyan-950/30">
+          <div class="flex items-center justify-between">
+            <p class="text-xs font-semibold text-cyan-200">Persentase Tuntas</p>
+            <div class="w-8 h-8 rounded-xl bg-cyan-400/20 text-cyan-300 flex items-center justify-center">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+            </div>
+          </div>
+          <p id="stat-persen" class="text-2xl sm:text-3xl font-black text-cyan-200 mt-2 tracking-tight">-</p>
+          <div class="w-full h-1.5 bg-white/15 rounded-full overflow-hidden mt-2">
+            <div id="stat-progress-bar" class="h-full bg-gradient-to-r from-cyan-400 to-emerald-400 rounded-full transition-all duration-700 ease-out" style="width: 0%"></div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Konten Utama -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
+  <!-- ==================== KONTEN UTAMA ==================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 -mt-4 sm:-mt-5 pb-10 space-y-6 relative z-10">
 
     <!-- Bar Khusus Admin (Tampil hanya setelah login Panel Guru) -->
-    <section id="admin-toolbar" class="hidden bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 rounded-2xl p-4 sm:p-5">
+    <section id="admin-toolbar" class="hidden animate-fade-in-up bg-white dark:bg-slate-900 border border-indigo-200/80 dark:border-indigo-800/70 rounded-2xl shadow-lg shadow-indigo-950/5 p-4 sm:p-5">
       <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div>
-          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300">
-            <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
-            Mode Panel Guru / Admin Aktif
-          </span>
-          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-0.5">
-            Kelola nilai siswa, ubah pengaturan sekolah, atau buka database Spreadsheet &amp; Drive.
-          </p>
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <div>
+            <span class="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-indigo-700 dark:text-indigo-300">
+              <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
+              Mode Panel Guru / Admin Aktif
+            </span>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-0.5">
+              Anda melihat seluruh data siswa. Kelola nilai, ubah pengaturan sekolah, atau buka database Spreadsheet &amp; Drive.
+            </p>
+          </div>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
           <button
             id="btn-add-nilai"
             type="button"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition-colors cursor-pointer"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-all active:scale-95 cursor-pointer"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
             </svg>
             <span>Tambah Nilai</span>
@@ -163,7 +275,7 @@
           <button
             id="btn-open-settings"
             type="button"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95 cursor-pointer"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -177,7 +289,7 @@
             href="#"
             target="_blank"
             rel="noopener noreferrer"
-            class="hidden inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition-colors"
+            class="hidden inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all active:scale-95"
           >
             <span>Buka Spreadsheet</span>
           </a>
@@ -187,7 +299,7 @@
             href="#"
             target="_blank"
             rel="noopener noreferrer"
-            class="hidden inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+            class="hidden inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all active:scale-95"
           >
             <span>Folder Drive</span>
           </a>
@@ -195,19 +307,19 @@
       </div>
     </section>
 
-    <!-- Panel Filter & Daftar Data -->
-    <section class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-4 sm:p-6 space-y-5">
+    <!-- Panel Filter, Profil Siswa & Daftar Data -->
+    <section class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl shadow-xl shadow-slate-900/5 dark:shadow-black/30 p-4 sm:p-6 space-y-5">
       <!-- Bar Pencarian & Filter -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3">
-        <div class="relative lg:col-span-6">
-          <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <div class="relative lg:col-span-6 group">
+          <svg class="w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
             type="search"
             id="search-input"
-            placeholder="Cari Nama Siswa, NISN, atau Mapel/Tugas..."
-            class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white dark:focus:bg-slate-900 transition"
+            placeholder="Masukkan NISN Anda secara lengkap untuk melihat nilai..."
+            class="w-full pl-11 pr-4 py-3 text-sm rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/80 dark:bg-slate-950/80 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-900 transition-all"
           />
         </div>
 
@@ -215,7 +327,7 @@
           <select
             id="filter-kelas"
             aria-label="Filter Kelas"
-            class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition"
+            class="w-full px-4 py-3 text-sm rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/80 dark:bg-slate-950/80 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition-all cursor-pointer"
           >
             <option value="ALL">Semua Kelas</option>
           </select>
@@ -225,7 +337,7 @@
           <select
             id="filter-status"
             aria-label="Filter Status Ketuntasan"
-            class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition"
+            class="w-full px-4 py-3 text-sm rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/80 dark:bg-slate-950/80 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition-all cursor-pointer"
           >
             <option value="ALL">Semua Status</option>
             <option value="TUNTAS">Tuntas</option>
@@ -234,15 +346,56 @@
         </div>
       </div>
 
+      <!-- Kartu Ringkasan Profil Siswa (Muncul dinamis saat NISN ditemukan di Mode Siswa) -->
+      <div id="student-summary-card" class="hidden animate-fade-in-up rounded-2xl bg-gradient-to-r from-indigo-50 via-blue-50 to-cyan-50 dark:from-indigo-950/60 dark:via-slate-900 dark:to-cyan-950/40 border border-indigo-200/70 dark:border-indigo-800/60 p-4 sm:p-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-3.5">
+            <div id="student-avatar" class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-cyan-500 text-white font-extrabold text-base flex items-center justify-center shadow-md shadow-indigo-600/20 shrink-0">
+              SN
+            </div>
+            <div>
+              <h3 id="student-summary-name" class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">-</h3>
+              <p id="student-summary-meta" class="text-xs font-medium text-slate-600 dark:text-slate-400">NISN: - &bull; Kelas: -</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 sm:gap-5">
+            <div class="text-center px-3 py-1.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/70 dark:border-slate-800">
+              <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400">Tuntas</p>
+              <p id="student-summary-tuntas" class="text-base font-extrabold text-emerald-600 dark:text-emerald-400">0</p>
+            </div>
+            <div class="text-center px-3 py-1.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/70 dark:border-slate-800">
+              <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400">Remedial</p>
+              <p id="student-summary-belum" class="text-base font-extrabold text-rose-600 dark:text-rose-400">0</p>
+            </div>
+            <div class="hidden sm:block min-w-[110px]">
+              <div class="flex justify-between text-[11px] font-semibold text-slate-600 dark:text-slate-300 mb-1">
+                <span>Progres</span>
+                <span id="student-summary-percent">0%</span>
+              </div>
+              <div class="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div id="student-summary-bar" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Loading State -->
-      <div id="loading-state" class="py-12 text-center text-slate-500 dark:text-slate-400">
-        <div class="mx-auto w-9 h-9 rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-indigo-600 animate-spin mb-3"></div>
-        <p class="text-sm font-medium">Mengambil data ketuntasan dari server SMAN 13 GARUT...</p>
+      <div id="loading-state" class="py-14 text-center text-slate-500 dark:text-slate-400">
+        <div class="mx-auto w-10 h-10 rounded-full border-4 border-indigo-100 dark:border-slate-800 border-t-indigo-600 animate-spin mb-3"></div>
+        <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">Menyinkronkan data SMAN 13 GARUT...</p>
+        <p class="text-xs text-slate-400 mt-1">Menghubungi server Google Apps Script</p>
       </div>
 
       <!-- Error State -->
       <div id="error-state" class="hidden p-5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-300 text-sm space-y-3">
-        <p class="font-bold">Gagal terhubung ke API Google Apps Script.</p>
+        <div class="flex items-center gap-2 font-bold">
+          <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <span>Gagal terhubung ke API Google Apps Script.</span>
+        </div>
         <p id="error-detail" class="text-xs sm:text-sm leading-relaxed">
           Pastikan Code.gs sudah diperbarui dan di-deploy ulang dengan akses "Siapa saja (Anyone)".
         </p>
@@ -250,14 +403,14 @@
           <button
             type="button"
             onclick="loadInitialData()"
-            class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-rose-600 hover:bg-rose-700 text-white cursor-pointer"
+            class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-rose-600 hover:bg-rose-700 text-white transition-all active:scale-95 cursor-pointer"
           >
             Coba Lagi
           </button>
           <button
             type="button"
             onclick="activateDemoMode()"
-            class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer"
+            class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition-all active:scale-95 cursor-pointer"
           >
             Buka Mode Demo (Offline)
           </button>
@@ -273,10 +426,10 @@
       </div>
 
       <!-- Tampilan Tabel Desktop -->
-      <div id="table-wrapper" class="hidden md:block overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+      <div id="table-wrapper" class="hidden md:block overflow-x-auto rounded-2xl border border-slate-200/80 dark:border-slate-800">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="bg-slate-100 dark:bg-slate-800/80 text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+            <tr class="bg-slate-100/80 dark:bg-slate-800/70 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               <th class="py-3.5 px-4">Siswa</th>
               <th class="py-3.5 px-4">Kelas</th>
               <th class="py-3.5 px-4">Mapel / Tugas</th>
@@ -286,38 +439,48 @@
               <th class="py-3.5 px-4 text-right">Tugas &amp; Aksi</th>
             </tr>
           </thead>
-          <tbody id="table-body" class="divide-y divide-slate-200 dark:divide-slate-800 text-sm"></tbody>
+          <tbody id="table-body" class="divide-y divide-slate-200/70 dark:divide-slate-800/80 text-sm"></tbody>
         </table>
       </div>
 
       <!-- Tampilan Kartu Mobile -->
       <div id="cards-wrapper" class="hidden md:hidden space-y-3"></div>
 
-      <!-- Empty State -->
-      <div id="empty-state" class="hidden py-12 text-center rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
-        <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">Tidak ada data nilai yang cocok.</p>
-        <p class="text-xs text-slate-400 mt-1">Coba ubah kata kunci pencarian atau filter kelas/status.</p>
+      <!-- Empty State Interaktif -->
+      <div id="empty-state" class="hidden py-14 text-center rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/30 px-4">
+        <div class="mx-auto w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-3.5 shadow-sm">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+          </svg>
+        </div>
+        <p id="empty-title" class="text-base font-bold text-slate-800 dark:text-slate-100">Masukkan NISN Anda untuk melihat nilai</p>
+        <p id="empty-subtitle" class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-md mx-auto">
+          Demi menjaga privasi, ketik nomor NISN Anda secara lengkap pada kolom pencarian di atas untuk melihat rincian ketuntasan nilai Anda.
+        </p>
       </div>
     </section>
   </main>
 
-  <!-- Footer -->
-  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 mt-auto">
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md mt-auto">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
-      <p>&copy; <span id="current-year"></span> <strong id="footer-school-name">SMAN 13 GARUT</strong>. Portal Ketuntasan Nilai &amp; Tugas Siswa.</p>
-      <p>Terhubung dengan Google Spreadsheet &amp; Google Drive</p>
+      <p>&copy; <span id="current-year"></span> <strong id="footer-school-name" class="text-slate-700 dark:text-slate-200">SMAN 13 GARUT</strong>. Portal Ketuntasan Nilai &amp; Tugas Siswa.</p>
+      <p class="inline-flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        Terhubung dengan Google Spreadsheet &amp; Google Drive
+      </p>
     </div>
   </footer>
 
   <!-- ==================== MODAL LOGIN PANEL GURU ==================== -->
   <div id="modal-login" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-4">
+    <div class="animate-fade-in-up bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-sm p-6 space-y-4">
       <div class="flex items-center justify-between">
-        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Masuk Panel Guru</h3>
-        <button type="button" data-close="modal-login" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">&times;</button>
+        <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Masuk Panel Guru</h3>
+        <button type="button" data-close="modal-login" class="w-8 h-8 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-lg cursor-pointer">&times;</button>
       </div>
       <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-        Masukkan PIN Admin untuk mengelola nilai siswa dan pengaturan portal.
+        Masukkan PIN Admin untuk mengelola seluruh nilai siswa dan pengaturan portal.
       </p>
       <form id="form-login" class="space-y-4">
         <div>
@@ -327,12 +490,12 @@
             id="input-pin"
             required
             placeholder="Masukkan PIN (default: admin123)"
-            class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-600"
+            class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
         <div class="flex justify-end gap-2">
           <button type="button" data-close="modal-login" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 cursor-pointer">Batal</button>
-          <button type="submit" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer">Masuk</button>
+          <button type="submit" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm cursor-pointer">Masuk</button>
         </div>
       </form>
     </div>
@@ -340,44 +503,44 @@
 
   <!-- ==================== MODAL TAMBAH / EDIT NILAI ==================== -->
   <div id="modal-nilai" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl w-full max-w-lg p-6 space-y-4 my-auto">
+    <div class="animate-fade-in-up bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-lg p-6 space-y-4 my-auto">
       <div class="flex items-center justify-between">
-        <h3 id="modal-nilai-title" class="text-lg font-bold text-slate-900 dark:text-white">Tambah Nilai Siswa</h3>
-        <button type="button" data-close="modal-nilai" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">&times;</button>
+        <h3 id="modal-nilai-title" class="text-lg font-extrabold text-slate-900 dark:text-white">Tambah Nilai Siswa</h3>
+        <button type="button" data-close="modal-nilai" class="w-8 h-8 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-lg cursor-pointer">&times;</button>
       </div>
       <form id="form-nilai" class="space-y-3.5">
         <input type="hidden" id="nilai-id" />
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label for="nilai-nisn" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">NISN *</label>
-            <input type="text" id="nilai-nisn" required placeholder="0081234501" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+            <input type="text" id="nilai-nisn" required placeholder="0081234501" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
           <div>
             <label for="nilai-kelas" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Kelas *</label>
-            <input type="text" id="nilai-kelas" required placeholder="XI IPA 1" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+            <input type="text" id="nilai-kelas" required placeholder="XI IPA 1" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
         </div>
         <div>
           <label for="nilai-nama" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nama Lengkap Siswa *</label>
-          <input type="text" id="nilai-nama" required placeholder="Ahmad Fauzan" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+          <input type="text" id="nilai-nama" required placeholder="Ahmad Fauzan" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
         <div>
           <label for="nilai-mapel" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Mata Pelajaran / Tugas *</label>
-          <input type="text" id="nilai-mapel" required placeholder="Matematika - Matriks" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+          <input type="text" id="nilai-mapel" required placeholder="Matematika - Matriks" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label for="nilai-skor" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nilai (0-100) *</label>
-            <input type="number" id="nilai-skor" min="0" max="100" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+            <input type="number" id="nilai-skor" min="0" max="100" required class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
           <div>
             <label for="nilai-kkm" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">KKM *</label>
-            <input type="number" id="nilai-kkm" min="0" max="100" required value="75" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+            <input type="number" id="nilai-kkm" min="0" max="100" required value="75" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
         </div>
         <div>
           <label for="nilai-catatan" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Catatan Guru</label>
-          <textarea id="nilai-catatan" rows="2" placeholder="Opsional: keterangan tugas/remedial..." class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600"></textarea>
+          <textarea id="nilai-catatan" rows="2" placeholder="Opsional: keterangan tugas/remedial..." class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
         </div>
         <div class="flex justify-end gap-2 pt-2">
           <button type="button" data-close="modal-nilai" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer">Batal</button>
@@ -389,12 +552,12 @@
 
   <!-- ==================== MODAL UPLOAD TUGAS KE DRIVE ==================== -->
   <div id="modal-upload" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
+    <div class="animate-fade-in-up bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-md p-6 space-y-4">
       <div class="flex items-center justify-between">
-        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Unggah Bukti Tugas</h3>
-        <button type="button" data-close="modal-upload" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">&times;</button>
+        <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Unggah Bukti Tugas</h3>
+        <button type="button" data-close="modal-upload" class="w-8 h-8 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-lg cursor-pointer">&times;</button>
       </div>
-      <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs space-y-1">
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs space-y-1">
         <p><span class="text-slate-500">Siswa:</span> <strong id="upload-info-nama">-</strong> (<span id="upload-info-kelas">-</span>)</p>
         <p><span class="text-slate-500">Tugas:</span> <strong id="upload-info-mapel">-</strong></p>
       </div>
@@ -422,33 +585,33 @@
 
   <!-- ==================== MODAL PENGATURAN SEKOLAH ==================== -->
   <div id="modal-settings" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl w-full max-w-lg p-6 space-y-4 my-auto">
+    <div class="animate-fade-in-up bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-lg p-6 space-y-4 my-auto">
       <div class="flex items-center justify-between">
-        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Pengaturan Portal Sekolah</h3>
-        <button type="button" data-close="modal-settings" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">&times;</button>
+        <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Pengaturan Portal Sekolah</h3>
+        <button type="button" data-close="modal-settings" class="w-8 h-8 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-lg cursor-pointer">&times;</button>
       </div>
       <form id="form-settings" class="space-y-3.5">
         <div>
           <label for="set-school-name" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nama Sekolah</label>
-          <input type="text" id="set-school-name" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+          <input type="text" id="set-school-name" required class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
         <div>
           <label for="set-academic-year" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Tahun Ajaran &amp; Semester</label>
-          <input type="text" id="set-academic-year" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+          <input type="text" id="set-academic-year" required class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label for="set-default-kkm" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">KKM Default</label>
-            <input type="number" id="set-default-kkm" min="0" max="100" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+            <input type="number" id="set-default-kkm" min="0" max="100" required class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
           <div>
             <label for="set-admin-pin" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">PIN Admin Baru</label>
-            <input type="text" id="set-admin-pin" required class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+            <input type="text" id="set-admin-pin" required class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
         </div>
         <div>
-          <label for="set-announcement" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Teks Pengumuman</label>
-          <textarea id="set-announcement" rows="3" class="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-600"></textarea>
+          <label for="set-announcement" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Teks Pengumuman (Berjalan)</label>
+          <textarea id="set-announcement" rows="3" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
         </div>
         <div class="flex justify-end gap-2 pt-2">
           <button type="button" data-close="modal-settings" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer">Batal</button>
@@ -460,8 +623,8 @@
 
   <!-- ==================== MODAL KONFIRMASI HAPUS ==================== -->
   <div id="modal-delete" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-4">
-      <h3 class="text-lg font-bold text-slate-900 dark:text-white">Hapus Data Nilai?</h3>
+    <div class="animate-fade-in-up bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-sm p-6 space-y-4">
+      <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Hapus Data Nilai?</h3>
       <p id="delete-confirm-text" class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
         Data yang dihapus tidak dapat dikembalikan.
       </p>
@@ -476,7 +639,7 @@
   <div
     id="toast"
     role="alert"
-    class="fixed bottom-5 right-5 z-50 max-w-sm px-4 py-3 rounded-xl shadow-lg text-xs sm:text-sm font-medium text-white bg-slate-900 opacity-0 translate-y-2 pointer-events-none transition-all duration-300"
+    class="fixed bottom-5 right-5 z-50 max-w-sm px-4 py-3 rounded-2xl shadow-xl text-xs sm:text-sm font-semibold text-white bg-slate-900 opacity-0 translate-y-2 pointer-events-none transition-all duration-300"
   >
     Notifikasi
   </div>
@@ -515,6 +678,7 @@
       connectionText: document.getElementById('connection-text'),
       btnAdminToggle: document.getElementById('btn-admin-toggle'),
       btnAdminLabel: document.getElementById('btn-admin-label'),
+      btnThemeToggle: document.getElementById('btn-theme-toggle'),
       adminToolbar: document.getElementById('admin-toolbar'),
       linkSpreadsheet: document.getElementById('link-spreadsheet'),
       linkDriveFolder: document.getElementById('link-drive-folder'),
@@ -522,6 +686,15 @@
       statTuntas: document.getElementById('stat-tuntas'),
       statBelum: document.getElementById('stat-belum'),
       statPersen: document.getElementById('stat-persen'),
+      statProgressBar: document.getElementById('stat-progress-bar'),
+      studentSummaryCard: document.getElementById('student-summary-card'),
+      studentAvatar: document.getElementById('student-avatar'),
+      studentSummaryName: document.getElementById('student-summary-name'),
+      studentSummaryMeta: document.getElementById('student-summary-meta'),
+      studentSummaryTuntas: document.getElementById('student-summary-tuntas'),
+      studentSummaryBelum: document.getElementById('student-summary-belum'),
+      studentSummaryPercent: document.getElementById('student-summary-percent'),
+      studentSummaryBar: document.getElementById('student-summary-bar'),
       searchInput: document.getElementById('search-input'),
       filterKelas: document.getElementById('filter-kelas'),
       filterStatus: document.getElementById('filter-status'),
@@ -532,11 +705,21 @@
       tableBody: document.getElementById('table-body'),
       cardsWrapper: document.getElementById('cards-wrapper'),
       emptyState: document.getElementById('empty-state'),
+      emptyTitle: document.getElementById('empty-title'),
+      emptySubtitle: document.getElementById('empty-subtitle'),
       refreshIcon: document.getElementById('refresh-icon'),
       toast: document.getElementById('toast')
     };
 
     document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    /* ==================== TEMA GELAP / TERANG ==================== */
+    el.btnThemeToggle.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      try {
+        localStorage.setItem('sman13_theme', isDark ? 'dark' : 'light');
+      } catch (e) {}
+    });
 
     /* ==================== UTILITY FUNCTIONS ==================== */
 
@@ -544,7 +727,7 @@
     function showToast(message, type = 'info') {
       el.toast.textContent = message;
       el.toast.className =
-        'fixed bottom-5 right-5 z-50 max-w-sm px-4 py-3 rounded-xl shadow-lg text-xs sm:text-sm font-medium text-white transition-all duration-300';
+        'fixed bottom-5 right-5 z-50 max-w-sm px-4 py-3 rounded-2xl shadow-xl text-xs sm:text-sm font-semibold text-white transition-all duration-300';
       if (type === 'success') el.toast.classList.add('bg-emerald-600');
       else if (type === 'error') el.toast.classList.add('bg-rose-600');
       else el.toast.classList.add('bg-slate-900', 'dark:bg-slate-700');
@@ -561,25 +744,43 @@
       }, 3600);
     }
 
+    /**
+     * Animasi hitungan angka halus pada kartu statistik.
+     */
+    function animateCounter(element, target, suffix = '') {
+      const duration = 550;
+      const startTime = performance.now();
+      const startVal = parseInt(element.textContent, 10) || 0;
+
+      function step(now) {
+        const progress = Math.min((now - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(startVal + (target - startVal) * eased);
+        element.textContent = current + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
     function setConnectionStatus(status) {
       if (status === 'connected') {
         el.connectionBadge.className =
-          'hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300';
+          'hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-100/90 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200/70 dark:border-emerald-800/60';
         el.connectionDot.className = 'w-2 h-2 rounded-full bg-emerald-500';
         el.connectionText.textContent = 'Terhubung';
       } else if (status === 'demo') {
         el.connectionBadge.className =
-          'hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-300';
+          'hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-indigo-100/90 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-300 border border-indigo-200/70 dark:border-indigo-800/60';
         el.connectionDot.className = 'w-2 h-2 rounded-full bg-indigo-500';
         el.connectionText.textContent = 'Mode Demo';
       } else if (status === 'error') {
         el.connectionBadge.className =
-          'hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300';
+          'hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-rose-100/90 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300 border border-rose-200/70 dark:border-rose-800/60';
         el.connectionDot.className = 'w-2 h-2 rounded-full bg-rose-500';
         el.connectionText.textContent = 'Terputus';
       } else {
         el.connectionBadge.className =
-          'hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300';
+          'hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-100/90 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200/70 dark:border-amber-800/60';
         el.connectionDot.className = 'w-2 h-2 rounded-full bg-amber-500 animate-pulse';
         el.connectionText.textContent = 'Menghubungkan...';
       }
@@ -594,6 +795,11 @@
         .replace(/'/g, '&#039;');
     }
 
+    function getInitials(name) {
+      const parts = String(name || 'S').trim().split(/\s+/);
+      return (parts[0]?.[0] || '') + (parts[1]?.[0] || parts[0]?.[1] || '');
+    }
+
     function openModal(id) {
       document.getElementById(id).classList.remove('hidden');
     }
@@ -602,7 +808,6 @@
       document.getElementById(id).classList.add('hidden');
     }
 
-    // Tutup modal lewat tombol close
     document.querySelectorAll('[data-close]').forEach((btn) => {
       btn.addEventListener('click', () => closeModal(btn.getAttribute('data-close')));
     });
@@ -620,9 +825,6 @@
       }
     }
 
-    /**
-     * Fallback JSONP untuk GET jika browser/sandbox memblokir CORS pada fetch().
-     */
     function apiGetJsonp(action) {
       return new Promise((resolve, reject) => {
         const callbackName = '__gasCb_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
@@ -664,7 +866,6 @@
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         return await parseJsonSafe(response);
       } catch (fetchErr) {
-        // Jika fetch gagal (CORS/redirect di preview atau GAS), coba fallback JSONP
         if (fetchErr instanceof TypeError || /Failed to fetch/i.test(fetchErr.message)) {
           return await apiGetJsonp(action);
         }
@@ -697,12 +898,14 @@
         defaultKkm: '75',
         adminPin: 'admin123',
         announcement:
-          'Mode Demo Offline aktif. Untuk menyimpan data permanen ke Spreadsheet & Drive, deploy Code.gs sebagai versi baru dengan akses "Siapa saja (Anyone)".'
+          'Batas akhir pengumpulan tugas remedial SMAN 13 GARUT adalah 15 Desember 2026 pukul 23.59 WIB. (Mode Demo Offline aktif — coba cari NISN: 0081234501 atau 0081234502).'
       };
       state.records = [
         { id: 'DEMO-1', nisn: '0081234501', nama: 'Ahmad Fauzan', kelas: 'XI IPA 1', mapel: 'Matematika - Matriks', nilai: 88, kkm: 75, status: 'TUNTAS', catatan: 'Sangat baik, lanjutkan!', linkDrive: '' },
-        { id: 'DEMO-2', nisn: '0081234502', nama: 'Siti Rahmawati', kelas: 'XI IPA 1', mapel: 'Matematika - Matriks', nilai: 68, kkm: 75, status: 'BELUM TUNTAS', catatan: 'Perlu remedial soal nomor 3-5', linkDrive: '' },
-        { id: 'DEMO-3', nisn: '0081234503', nama: 'Budi Santoso', kelas: 'XI IPS 2', mapel: 'Ekonomi - Pendapatan Nasional', nilai: 78, kkm: 75, status: 'TUNTAS', catatan: 'Tuntas sesuai target', linkDrive: '' }
+        { id: 'DEMO-2', nisn: '0081234501', nama: 'Ahmad Fauzan', kelas: 'XI IPA 1', mapel: 'Fisika - Kinematika', nilai: 82, kkm: 75, status: 'TUNTAS', catatan: 'Tugas lengkap dan rapi', linkDrive: '' },
+        { id: 'DEMO-3', nisn: '0081234502', nama: 'Siti Rahmawati', kelas: 'XI IPA 1', mapel: 'Matematika - Matriks', nilai: 68, kkm: 75, status: 'BELUM TUNTAS', catatan: 'Perlu remedial soal nomor 3-5', linkDrive: '' },
+        { id: 'DEMO-4', nisn: '0081234502', nama: 'Siti Rahmawati', kelas: 'XI IPA 1', mapel: 'Fisika - Kinematika', nilai: 90, kkm: 75, status: 'TUNTAS', catatan: 'Sempurna', linkDrive: '' },
+        { id: 'DEMO-5', nisn: '0081234503', nama: 'Budi Santoso', kelas: 'XI IPS 2', mapel: 'Ekonomi - Pendapatan Nasional', nilai: 78, kkm: 75, status: 'TUNTAS', catatan: 'Tuntas sesuai target', linkDrive: '' }
       ];
       el.errorState.classList.add('hidden');
       el.loadingState.classList.add('hidden');
@@ -711,7 +914,7 @@
       updateStats();
       renderList();
       setConnectionStatus('demo');
-      showToast('Mode Demo aktif (data contoh lokal).', 'info');
+      showToast('Mode Demo aktif. Coba ketik NISN: 0081234501', 'info');
     }
 
     async function loadInitialData() {
@@ -724,6 +927,7 @@
         el.tableWrapper.classList.add('hidden');
         el.cardsWrapper.classList.add('hidden');
         el.emptyState.classList.add('hidden');
+        el.studentSummaryCard.classList.add('hidden');
       }
 
       try {
@@ -747,8 +951,8 @@
         el.errorDetail.textContent =
           'Browser tidak dapat mengambil data dari Google Apps Script (CORS / akses ditolak). ' +
           'Pastikan: (1) Code.gs terbaru sudah di-deploy sebagai "Versi baru" dengan akses "Siapa saja (Anyone)", ' +
-          'dan (2) halaman dibuka langsung lewat GitHub Pages (bukan sandbox Preview terbatas). ' +
-          'Anda juga dapat mengklik "Buka Mode Demo (Offline)" untuk melihat tampilan aplikasi.';
+          'dan (2) halaman dibuka langsung lewat GitHub Pages. ' +
+          'Anda juga dapat mengklik "Buka Mode Demo (Offline)" untuk mencoba tampilan portal.';
       } finally {
         el.loadingState.classList.add('hidden');
         el.refreshIcon.classList.remove('animate-spin');
@@ -793,10 +997,11 @@
       const belum = total - tuntas;
       const persen = total > 0 ? Math.round((tuntas / total) * 100) : 0;
 
-      el.statTotal.textContent = total;
-      el.statTuntas.textContent = tuntas;
-      el.statBelum.textContent = belum;
-      el.statPersen.textContent = persen + '%';
+      animateCounter(el.statTotal, total);
+      animateCounter(el.statTuntas, tuntas);
+      animateCounter(el.statBelum, belum);
+      animateCounter(el.statPersen, persen, '%');
+      el.statProgressBar.style.width = persen + '%';
     }
 
     function getFilteredRecords() {
@@ -804,6 +1009,18 @@
       const kelas = el.filterKelas.value;
       const status = el.filterStatus.value;
 
+      // Mode Siswa (bukan Admin): wajib memasukkan NISN lengkap, hanya tampilkan data milik NISN tersebut
+      if (!state.isAdmin) {
+        if (!q) return [];
+        return state.records.filter((r) => {
+          const matchKelas = kelas === 'ALL' || r.kelas === kelas;
+          const matchStatus = status === 'ALL' || r.status === status;
+          const matchNisn = String(r.nisn || '').trim().toLowerCase() === q;
+          return matchKelas && matchStatus && matchNisn;
+        });
+      }
+
+      // Mode Panel Guru / Admin: dapat melihat seluruh data & mencari berdasarkan Nama, NISN, Mapel, atau Kelas
       return state.records.filter((r) => {
         const matchKelas = kelas === 'ALL' || r.kelas === kelas;
         const matchStatus = status === 'ALL' || r.status === status;
@@ -817,13 +1034,51 @@
       });
     }
 
+    function updateStudentSummary(list) {
+      if (state.isAdmin || list.length === 0) {
+        el.studentSummaryCard.classList.add('hidden');
+        return;
+      }
+
+      const first = list[0];
+      const total = list.length;
+      const tuntas = list.filter((r) => r.status === 'TUNTAS').length;
+      const belum = total - tuntas;
+      const persen = total > 0 ? Math.round((tuntas / total) * 100) : 0;
+
+      el.studentAvatar.textContent = getInitials(first.nama).toUpperCase();
+      el.studentSummaryName.textContent = first.nama;
+      el.studentSummaryMeta.textContent = `NISN: ${first.nisn} • Kelas: ${first.kelas}`;
+      el.studentSummaryTuntas.textContent = tuntas;
+      el.studentSummaryBelum.textContent = belum;
+      el.studentSummaryPercent.textContent = persen + '%';
+      el.studentSummaryBar.style.width = persen + '%';
+      el.studentSummaryCard.classList.remove('hidden');
+    }
+
     function renderList() {
       const list = getFilteredRecords();
+      const q = el.searchInput.value.trim();
+
+      updateStudentSummary(list);
 
       if (list.length === 0) {
         el.tableWrapper.classList.add('hidden');
         el.cardsWrapper.classList.add('hidden');
         el.emptyState.classList.remove('hidden');
+
+        if (!state.isAdmin && !q) {
+          el.emptyTitle.textContent = 'Masukkan NISN Anda untuk melihat nilai';
+          el.emptySubtitle.textContent =
+            'Demi menjaga privasi, ketik nomor NISN Anda secara lengkap pada kolom pencarian di atas untuk menampilkan data ketuntasan nilai Anda.';
+        } else if (!state.isAdmin && q) {
+          el.emptyTitle.textContent = `Data untuk NISN "${q}" tidak ditemukan`;
+          el.emptySubtitle.textContent =
+            'Pastikan nomor NISN yang dimasukkan sudah benar dan lengkap, atau periksa filter Kelas/Status.';
+        } else {
+          el.emptyTitle.textContent = 'Tidak ada data nilai yang cocok';
+          el.emptySubtitle.textContent = 'Coba ubah kata kunci pencarian atau filter kelas/status.';
+        }
         return;
       }
 
@@ -836,19 +1091,23 @@
         .map((r) => {
           const isTuntas = r.status === 'TUNTAS';
           const badgeClass = isTuntas
-            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300'
-            : 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300';
+            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 ring-1 ring-emerald-500/20'
+            : 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300 ring-1 ring-rose-500/20';
 
           return `
-            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+            <tr class="hover:bg-indigo-50/40 dark:hover:bg-slate-800/50 transition-colors">
               <td class="py-3.5 px-4">
-                <p class="font-semibold text-slate-900 dark:text-white">${escapeHtml(r.nama)}</p>
-                <p class="text-xs text-slate-500">NISN: ${escapeHtml(r.nisn)}</p>
+                <p class="font-bold text-slate-900 dark:text-white">${escapeHtml(r.nama)}</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 font-mono">NISN: ${escapeHtml(r.nisn)}</p>
               </td>
-              <td class="py-3.5 px-4 whitespace-nowrap text-slate-700 dark:text-slate-300">${escapeHtml(r.kelas)}</td>
-              <td class="py-3.5 px-4 font-medium text-slate-800 dark:text-slate-200">${escapeHtml(r.mapel)}</td>
+              <td class="py-3.5 px-4 whitespace-nowrap">
+                <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                  ${escapeHtml(r.kelas)}
+                </span>
+              </td>
+              <td class="py-3.5 px-4 font-semibold text-slate-800 dark:text-slate-200">${escapeHtml(r.mapel)}</td>
               <td class="py-3.5 px-4 text-center whitespace-nowrap">
-                <span class="text-base font-bold ${isTuntas ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">${r.nilai}</span>
+                <span class="text-base font-extrabold ${isTuntas ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">${r.nilai}</span>
                 <span class="text-xs text-slate-400">/ ${r.kkm}</span>
               </td>
               <td class="py-3.5 px-4 text-center whitespace-nowrap">
@@ -863,17 +1122,17 @@
                 <div class="inline-flex items-center gap-1.5">
                   ${
                     r.linkDrive
-                      ? `<a href="${escapeHtml(r.linkDrive)}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/40 dark:text-blue-300">Lihat File</a>`
+                      ? `<a href="${escapeHtml(r.linkDrive)}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 text-xs font-semibold rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/40 dark:text-blue-300 transition-colors">Lihat File</a>`
                       : ''
                   }
-                  <button type="button" onclick="openUploadModal('${escapeHtml(r.id)}')" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-900/40 dark:text-indigo-300 cursor-pointer">
+                  <button type="button" onclick="openUploadModal('${escapeHtml(r.id)}')" class="px-2.5 py-1.5 text-xs font-semibold rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-900/40 dark:text-indigo-300 transition-colors cursor-pointer">
                     ${r.linkDrive ? 'Ubah File' : 'Upload Tugas'}
                   </button>
                   ${
                     state.isAdmin
                       ? `
-                        <button type="button" onclick="openEditNilaiModal('${escapeHtml(r.id)}')" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-900/40 dark:text-amber-300 cursor-pointer">Edit</button>
-                        <button type="button" onclick="openDeleteModal('${escapeHtml(r.id)}')" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-900/40 dark:text-rose-300 cursor-pointer">Hapus</button>
+                        <button type="button" onclick="openEditNilaiModal('${escapeHtml(r.id)}')" class="px-2.5 py-1.5 text-xs font-semibold rounded-xl bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-900/40 dark:text-amber-300 transition-colors cursor-pointer">Edit</button>
+                        <button type="button" onclick="openDeleteModal('${escapeHtml(r.id)}')" class="px-2.5 py-1.5 text-xs font-semibold rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-900/40 dark:text-rose-300 transition-colors cursor-pointer">Hapus</button>
                       `
                       : ''
                   }
@@ -893,20 +1152,20 @@
             : 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300';
 
           return `
-            <article class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 space-y-3">
+            <article class="animate-fade-in-up p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 space-y-3 shadow-sm">
               <div class="flex items-start justify-between gap-2">
                 <div>
-                  <h4 class="text-sm font-bold text-slate-900 dark:text-white">${escapeHtml(r.nama)}</h4>
-                  <p class="text-xs text-slate-500">NISN: ${escapeHtml(r.nisn)} &bull; ${escapeHtml(r.kelas)}</p>
+                  <h4 class="text-sm font-extrabold text-slate-900 dark:text-white">${escapeHtml(r.nama)}</h4>
+                  <p class="text-xs text-slate-500 font-mono">NISN: ${escapeHtml(r.nisn)} &bull; ${escapeHtml(r.kelas)}</p>
                 </div>
                 <span class="px-2.5 py-1 text-[11px] font-bold rounded-full shrink-0 ${badgeClass}">
                   ${escapeHtml(r.status)}
                 </span>
               </div>
 
-              <div class="flex items-center justify-between gap-2 py-2 px-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+              <div class="flex items-center justify-between gap-2 py-2.5 px-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
                 <p class="text-xs font-semibold text-slate-800 dark:text-slate-200">${escapeHtml(r.mapel)}</p>
-                <p class="text-sm font-extrabold shrink-0 ${isTuntas ? 'text-emerald-600' : 'text-rose-600'}">
+                <p class="text-sm font-black shrink-0 ${isTuntas ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">
                   ${r.nilai} <span class="text-xs font-normal text-slate-400">/ KKM ${r.kkm}</span>
                 </p>
               </div>
@@ -920,17 +1179,17 @@
               <div class="flex flex-wrap items-center gap-2 pt-1">
                 ${
                   r.linkDrive
-                    ? `<a href="${escapeHtml(r.linkDrive)}" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 text-white">Lihat File Drive</a>`
+                    ? `<a href="${escapeHtml(r.linkDrive)}" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 text-xs font-semibold rounded-xl bg-blue-600 text-white">Lihat File Drive</a>`
                     : ''
                 }
-                <button type="button" onclick="openUploadModal('${escapeHtml(r.id)}')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white cursor-pointer">
+                <button type="button" onclick="openUploadModal('${escapeHtml(r.id)}')" class="px-3 py-1.5 text-xs font-semibold rounded-xl bg-indigo-600 text-white cursor-pointer">
                   ${r.linkDrive ? 'Unggah Ulang' : 'Upload Tugas'}
                 </button>
                 ${
                   state.isAdmin
                     ? `
-                      <button type="button" onclick="openEditNilaiModal('${escapeHtml(r.id)}')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-amber-500 text-white cursor-pointer">Edit</button>
-                      <button type="button" onclick="openDeleteModal('${escapeHtml(r.id)}')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-rose-600 text-white cursor-pointer">Hapus</button>
+                      <button type="button" onclick="openEditNilaiModal('${escapeHtml(r.id)}')" class="px-3 py-1.5 text-xs font-semibold rounded-xl bg-amber-500 text-white cursor-pointer">Edit</button>
+                      <button type="button" onclick="openDeleteModal('${escapeHtml(r.id)}')" class="px-3 py-1.5 text-xs font-semibold rounded-xl bg-rose-600 text-white cursor-pointer">Hapus</button>
                     `
                     : ''
                 }
@@ -948,6 +1207,7 @@
         state.isAdmin = false;
         el.adminToolbar.classList.add('hidden');
         el.btnAdminLabel.textContent = 'Panel Guru';
+        el.searchInput.placeholder = 'Masukkan NISN Anda secara lengkap untuk melihat nilai...';
         renderList();
         showToast('Keluar dari Panel Guru.', 'info');
       } else {
@@ -967,6 +1227,7 @@
         closeModal('modal-login');
         el.adminToolbar.classList.remove('hidden');
         el.btnAdminLabel.textContent = 'Keluar Admin';
+        el.searchInput.placeholder = 'Cari Nama Siswa, NISN, atau Mapel/Tugas...';
         renderList();
         showToast('Berhasil masuk ke Panel Guru.', 'success');
       } else {
