@@ -264,6 +264,17 @@
           </button>
 
           <button
+            id="btn-open-roster"
+            type="button"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-sky-600 hover:bg-sky-700 text-white shadow-sm transition-all active:scale-95 cursor-pointer"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+            </svg>
+            <span>Daftar Siswa Kelas</span>
+          </button>
+
+          <button
             id="btn-open-admins"
             type="button"
             class="hidden inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-teal-600 hover:bg-teal-700 text-white shadow-sm transition-all active:scale-95 cursor-pointer"
@@ -661,6 +672,27 @@
       </div>
 
       <form id="form-batch-nilai" class="space-y-4">
+        <!-- Pilih Cepat Daftar Siswa Kelas XII.4 - XII.8 -->
+        <div class="p-3.5 rounded-2xl bg-sky-50/80 dark:bg-sky-950/30 border border-sky-200/80 dark:border-sky-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+          <div>
+            <p class="text-xs font-bold text-sky-900 dark:text-sky-200">Muat Otomatis Daftar Siswa SMAN 13 Garut</p>
+            <p class="text-[11px] text-sky-700/90 dark:text-sky-300/80">Pilih kelas (XII.4 – XII.8) untuk mengisi otomatis seluruh NISN &amp; Nama Siswa.</p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <select id="batch-preset-kelas" class="px-3 py-1.5 text-xs font-semibold rounded-xl border border-sky-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500">
+              <option value="">-- Pilih Kelas --</option>
+              <option value="XII.4">Kelas XII.4 (37 Siswa)</option>
+              <option value="XII.5">Kelas XII.5 (37 Siswa)</option>
+              <option value="XII.6">Kelas XII.6 (37 Siswa)</option>
+              <option value="XII.7">Kelas XII.7 (36 Siswa)</option>
+              <option value="XII.8">Kelas XII.8 (36 Siswa)</option>
+            </select>
+            <button type="button" id="btn-load-preset-kelas" class="px-3 py-1.5 text-xs font-semibold rounded-xl bg-sky-600 hover:bg-sky-700 text-white shadow-sm cursor-pointer">
+              Muat Semua Siswa
+            </button>
+          </div>
+        </div>
+
         <!-- Info Umum Kelas, Mapel & KKM -->
         <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800">
           <div class="sm:col-span-4">
@@ -814,6 +846,114 @@
     </div>
   </div>
 
+  <!-- ==================== MODAL DAFTAR NAMA SISWA RESMI (XII.4 - XII.8) ==================== -->
+  <div id="modal-roster" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="animate-fade-in-up bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-5xl p-4 sm:p-6 space-y-4 my-auto">
+      <!-- Bar Kontrol Atas -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">Daftar Nama Siswa Tahun Pelajaran 2026/2027</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400">SMA Negeri 13 Garut &bull; Data Master Kelas XII.4 – XII.8</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <select id="roster-kelas-select" class="px-3 py-2 text-xs sm:text-sm font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
+            <option value="XII.4">Kelas XII.4</option>
+            <option value="XII.5">Kelas XII.5</option>
+            <option value="XII.6">Kelas XII.6</option>
+            <option value="XII.7">Kelas XII.7</option>
+            <option value="XII.8">Kelas XII.8</option>
+          </select>
+          <button type="button" id="btn-use-roster-for-batch" class="px-3 py-2 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm cursor-pointer">
+            Input Nilai Kelas Ini
+          </button>
+          <button type="button" id="btn-print-roster" class="px-3 py-2 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm cursor-pointer">
+            Cetak / PDF
+          </button>
+          <button type="button" data-close="modal-roster" class="w-8 h-8 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-lg cursor-pointer">&times;</button>
+        </div>
+      </div>
+
+      <!-- Lembar Daftar Nama Siswa (Siap Cetak) -->
+      <div id="roster-printable-area" class="max-h-[70vh] overflow-y-auto rounded-2xl border border-slate-300 dark:border-slate-700 bg-white text-slate-900 p-4 sm:p-6 space-y-3">
+        <!-- Kop Surat Resmi -->
+        <div class="relative border-b-2 border-slate-900 pb-2.5 text-center">
+          <div class="sm:absolute sm:right-0 sm:top-1 inline-block mb-2 sm:mb-0 border-2 border-slate-900 px-4 py-1 font-extrabold text-base tracking-wide">
+            <span id="roster-box-kelas">XII.4</span>
+          </div>
+          <p class="text-[11px] sm:text-xs font-bold leading-tight">PEMERINTAH DAERAH PROVINSI JAWA BARAT</p>
+          <p class="text-[11px] sm:text-xs font-bold leading-tight">DINAS PENDIDIKAN</p>
+          <p class="text-[11px] sm:text-xs font-bold leading-tight">CABANG DINAS PENDIDIKAN WILAYAH XI</p>
+          <p class="text-xs sm:text-sm font-black leading-tight">SMA NEGERI 13 GARUT</p>
+          <p class="text-[10px] sm:text-[11px] text-slate-700">Jl. Raya Selaawi Bl. Limbangan 44186 Tlp (0262) 431458</p>
+        </div>
+
+        <div class="text-center space-y-0.5">
+          <h4 class="text-xs sm:text-sm font-extrabold uppercase tracking-wide">DAFTAR NAMA SISWA TAHUN PELAJARAN 2026/2027</h4>
+          <p class="text-left text-[11px] font-medium text-slate-700">Semester : ..........</p>
+        </div>
+
+        <!-- Tabel Daftar Siswa & Kolom Tanggal/Bulan -->
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse border border-slate-800 text-[11px]">
+            <thead>
+              <tr class="bg-slate-100">
+                <th rowspan="2" class="border border-slate-800 px-1.5 py-1 text-center w-8">No.</th>
+                <th rowspan="2" class="border border-slate-800 px-2 py-1 text-center w-24">NIS/NISN</th>
+                <th rowspan="2" class="border border-slate-800 px-2 py-1 text-left min-w-[190px]">Nama Siswa</th>
+                <th rowspan="2" class="border border-slate-800 px-1.5 py-1 text-center w-8">L/P</th>
+                <th colspan="16" class="border border-slate-800 px-2 py-0.5 text-center">Tanggal/Bulan</th>
+              </tr>
+              <tr class="bg-slate-50">
+                <th class="border border-slate-800 w-5 h-4"></th>
+                <th class="border border-slate-800 w-5"></th>
+                <th class="border border-slate-800 w-5"></th>
+                <th class="border border-slate-800 w-5"></th>
+                <th class="border border-slate-800 w-5"></th>
+                <th class="border border-slate-800 w-5"></th>
+                <th class="border border-slate-800 w-5"></th>
+                <th class="border border-slate-800 w-5"></th>
+                <th class="border border-slate-800 w-5"></th>
+                <th class="border border-slate-800 w-5"></th>
+                <th class="border border-slate-800 w-5"></th>
+                <th class="border border-slate-800 w-5"></th>
+                <th class="border border-slate-800 w-5"></th>
+                <th class="border border-slate-800 w-5"></th>
+                <th class="border border-slate-800 w-5"></th>
+                <th class="border border-slate-800 w-5"></th>
+              </tr>
+            </thead>
+            <tbody id="roster-table-body"></tbody>
+          </table>
+        </div>
+
+        <!-- Rekap & Tanda Tangan -->
+        <div class="space-y-4 pt-1 text-[11px]">
+          <div class="flex flex-wrap items-center justify-between font-bold">
+            <span id="roster-count-l">Laki-laki : 13</span>
+            <span id="roster-count-p">Perempuan : 24</span>
+            <span id="roster-count-total">Jumlah : 37</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6 pt-1">
+            <div>
+              <p>PLT. Kepala Sekolah</p>
+              <div class="h-12"></div>
+              <p class="font-bold underline">Andang Purwoto, S.Pd.</p>
+              <p>NIP. 19670708 199802 1 004</p>
+            </div>
+            <div class="pl-4 sm:pl-16">
+              <p>Garut, Juli 2026</p>
+              <p>Wali Kelas</p>
+              <div class="h-10"></div>
+              <p id="roster-wali-nama" class="font-bold underline">Rama Wardana, S.Pd</p>
+              <p id="roster-wali-nip">NIP 199410222025211106</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Notifikasi Toast -->
   <div
     id="toast"
@@ -829,6 +969,231 @@
      */
     const GAS_WEB_APP_URL =
       'https://script.google.com/macros/s/AKfycby45JpHe2yDd_wtkbexlroErRg7v85J9rLc2bEZwmB8iGaZf36-SS8sCjpQneZuFy1WIg/exec';
+
+    /**
+     * Master Data Daftar Nama Siswa Tahun Pelajaran 2026/2027 - SMA Negeri 13 Garut
+     * Sumber: Dokumen Resmi Kelas XII.4, XII.5, XII.6, XII.7, dan XII.8
+     */
+    const MASTER_KELAS_DATA = {
+      'XII.4': {
+        waliKelas: 'Rama Wardana, S.Pd',
+        nipWali: 'NIP 199410222025211106',
+        rekap: { l: 13, p: 24, total: 37 },
+        siswa: [
+          { nisn: '242510035', nama: 'ANDIRA RANGGA MULYA', lp: 'L' },
+          { nisn: '242510037', nama: 'ANISA SELSA SAHIRA', lp: 'P' },
+          { nisn: '242510058', nama: 'AURELIA NUR AZIZAH', lp: 'P' },
+          { nisn: '242510068', nama: 'BUHORI MUSLIM', lp: 'L' },
+          { nisn: '242510074', nama: 'CHELSY AURELYA', lp: 'P' },
+          { nisn: '242510081', nama: 'DAFHIN AUFA GHIFARI', lp: 'L' },
+          { nisn: '242510093', nama: 'DHIANY ANINUNNISA', lp: 'P' },
+          { nisn: '242510095', nama: 'DHINE DISYA NADIN CHANDRA', lp: 'P' },
+          { nisn: '242510103', nama: 'DIMAS SAEPUL AQIL', lp: 'L' },
+          { nisn: '242510108', nama: 'DITA SEPTIANI', lp: 'P' },
+          { nisn: '242510111', nama: 'ECHA NABILA NURAZIZAH', lp: 'P' },
+          { nisn: '242510118', nama: 'FAHIRA AL MAYZURA ZAKIA ARU', lp: 'P' },
+          { nisn: '242510187', nama: 'M IKHSAN AKBAR NUGRAHA', lp: 'L' },
+          { nisn: '242510204', nama: 'MEISYA ARTITA FERDIN', lp: 'P' },
+          { nisn: '242510219', nama: 'MUFQI AINURROFIQ', lp: 'L' },
+          { nisn: '242510222', nama: "MUHAMAD FA'IQ MAULANI", lp: 'L' },
+          { nisn: '242510236', nama: 'MUHAMMAD ADIRA FAJAR', lp: 'L' },
+          { nisn: '242510237', nama: 'MUHAMMAD DAFFA', lp: 'L' },
+          { nisn: '242510239', nama: 'MUHAMMAD FACHRI ABDURROHMAN', lp: 'L' },
+          { nisn: '242510243', nama: 'MUHAMMAD GIZAL ALFARIZI', lp: 'L' },
+          { nisn: '242510272', nama: 'NAJLA NUR KHILWA', lp: 'P' },
+          { nisn: '242510281', nama: 'NAZMA AZZAMILATUZ ZAHRA', lp: 'P' },
+          { nisn: '242510285', nama: 'NAZWA BINTANG ALEXANDRIA', lp: 'P' },
+          { nisn: '242510320', nama: 'RAHSYA PUTRI LESTARI', lp: 'P' },
+          { nisn: '242510329', nama: 'RAYA DEWI ANJANI', lp: 'P' },
+          { nisn: '242510337', nama: 'RENA NURAINI', lp: 'P' },
+          { nisn: '242510345', nama: 'RIAN JULIANTO', lp: 'L' },
+          { nisn: '242510358', nama: 'RISMA NURHAYATI', lp: 'P' },
+          { nisn: '242510364', nama: 'RIZKO NURFAZRI', lp: 'L' },
+          { nisn: '242510369', nama: 'ROSIANA ISNAYANTI', lp: 'P' },
+          { nisn: '242510370', nama: 'RUBBIYA MAULIDA SALIM', lp: 'P' },
+          { nisn: '242510377', nama: 'SALSA MAGFIRA', lp: 'P' },
+          { nisn: '242510387', nama: 'SETIANI NURUL AZMI', lp: 'P' },
+          { nisn: '242510404', nama: 'SYAHIRA MARWAH NURFAJRIAH', lp: 'P' },
+          { nisn: '242510418', nama: 'TIARA ALIVIA', lp: 'P' },
+          { nisn: '242510428', nama: 'VIRDA AULIA RAMDHANI', lp: 'P' },
+          { nisn: '242510436', nama: 'WULAN QUEEN HAYASI', lp: 'P' }
+        ]
+      },
+      'XII.5': {
+        waliKelas: 'Dede Iman, S.Pd.',
+        nipWali: 'NIP 198806012020121009',
+        rekap: { l: 15, p: 22, total: 37 },
+        siswa: [
+          { nisn: '242510011', nama: 'AGNIA RACHDIANI AYUNINGRAT', lp: 'P' },
+          { nisn: '242510018', nama: 'AKBAR NUR ALIP', lp: 'L' },
+          { nisn: '242510019', nama: 'AL JANABI', lp: 'L' },
+          { nisn: '242510024', nama: 'ALINY FITRA RAHAYU', lp: 'P' },
+          { nisn: '252611575', nama: 'AMANDA RIMA NURFADILLAH', lp: 'P' },
+          { nisn: '242510034', nama: 'ANDINA LESTARI', lp: 'P' },
+          { nisn: '242510040', nama: 'ANNIDA RAHMADIANI', lp: 'P' },
+          { nisn: '242510041', nama: 'ANNISA DZAKIAH ANDINI', lp: 'P' },
+          { nisn: '242510079', nama: 'DAFFA ABDUL ZAELANI', lp: 'L' },
+          { nisn: '242510115', nama: 'FACHRI MUHAMMAD ZAELANI', lp: 'L' },
+          { nisn: '242510117', nama: 'FADLI ABDILLAH', lp: 'L' },
+          { nisn: '242510126', nama: 'FAUZAN PADILAH', lp: 'P' },
+          { nisn: '242510153', nama: 'IMAM SUBEKTI', lp: 'L' },
+          { nisn: '242510156', nama: 'ISAM SAMBAS', lp: 'L' },
+          { nisn: '242510157', nama: 'JAHRA FAUZIAH', lp: 'P' },
+          { nisn: '242510165', nama: 'KAMELIA', lp: 'P' },
+          { nisn: '242510173', nama: 'KEYSA AULIA AGUSTIN', lp: 'P' },
+          { nisn: '242510182', nama: 'LIA SITI JULIANI', lp: 'P' },
+          { nisn: '242510185', nama: 'LUNA MAYA', lp: 'P' },
+          { nisn: '242510197', nama: 'MAHMUDIN', lp: 'L' },
+          { nisn: '242510202', nama: 'MAYANG HARMELANDA SUKMAWAN', lp: 'P' },
+          { nisn: '242510210', nama: 'MEYLINDA', lp: 'P' },
+          { nisn: '242510213', nama: 'MOCHAMAD IRGI FAHREZI', lp: 'L' },
+          { nisn: '242510234', nama: 'MUHAMAD SYAHRUL', lp: 'L' },
+          { nisn: '242510244', nama: 'MUHAMMAD HAIL LUTHFI', lp: 'L' },
+          { nisn: '242510274', nama: 'NASYA DESFINA AUNINDA', lp: 'P' },
+          { nisn: '242510299', nama: 'NYIMAS SYAKIINAH NURLAYLIE', lp: 'P' },
+          { nisn: '242510303', nama: 'PASNI AKBAR', lp: 'L' },
+          { nisn: '242510425', nama: 'RAHMALIA RISWANA FATIHAH', lp: 'P' },
+          { nisn: '242510326', nama: 'RAKA REHAN NOVA', lp: 'L' },
+          { nisn: '242510343', nama: 'REZKY MAULIDINA PUTRA', lp: 'L' },
+          { nisn: '242510379', nama: 'SALWA ALIFATUSYADIAH', lp: 'P' },
+          { nisn: '242510391', nama: 'SILVA SABILA', lp: 'P' },
+          { nisn: '242510412', nama: 'SYIPA SYAM', lp: 'P' },
+          { nisn: '242510427', nama: 'VINA PRATIWI', lp: 'P' },
+          { nisn: '242510429', nama: 'VIRRA SEKAR RAHAYU', lp: 'P' },
+          { nisn: '242510440', nama: 'ZAHRA TRI JULIA APRILLIYANI', lp: 'P' }
+        ]
+      },
+      'XII.6': {
+        waliKelas: 'Muhammad Luthfi, S.Pd.,M.Pd.',
+        nipWali: 'NIP 199210282020121012',
+        rekap: { l: 14, p: 23, total: 37 },
+        siswa: [
+          { nisn: '242510015', nama: 'AHMAD YUSUF PAIRUS ILHAM', lp: 'L' },
+          { nisn: '242510032', nama: 'AMIRA DIARA LOVA', lp: 'P' },
+          { nisn: '242510038', nama: 'ANISSA NUR RAHMAWATI', lp: 'P' },
+          { nisn: '242510039', nama: 'ANITA SUHARTINI', lp: 'P' },
+          { nisn: '242510053', nama: 'ASIAH NUR JANAH', lp: 'P' },
+          { nisn: '242510077', nama: 'DAFA PRATAMA NUGRAHA', lp: 'L' },
+          { nisn: '242510086', nama: 'DESRI DAHANA WATI', lp: 'P' },
+          { nisn: '242510112', nama: 'EDZFAR NOVIAN', lp: 'L' },
+          { nisn: '242510119', nama: 'FAHRI ALFAHREZI', lp: 'L' },
+          { nisn: '242510161', nama: 'JOSYA REJEKI PRATAMA SARAGI', lp: 'L' },
+          { nisn: '242510172', nama: 'KETTY AULIA PUTRI', lp: 'P' },
+          { nisn: '242510178', nama: 'KIRANI SITI RIDWANI', lp: 'P' },
+          { nisn: '242510184', nama: 'LISMA JULIANI', lp: 'P' },
+          { nisn: '242510207', nama: 'MELSI MAULINA', lp: 'P' },
+          { nisn: '242510214', nama: 'MOCHAMAD KARIM', lp: 'L' },
+          { nisn: '242510223', nama: 'MUHAMAD FAIZ ALFAMUGNI', lp: 'L' },
+          { nisn: '242510224', nama: 'MUHAMAD FARHAN FIRMANSYAH', lp: 'L' },
+          { nisn: '242510246', nama: 'MUHAMMAD MALKI AL-ZAINI', lp: 'L' },
+          { nisn: '242510250', nama: 'MUHAMMAD RAINA NURROHIM', lp: 'L' },
+          { nisn: '242510263', nama: 'N HASNA MUFIDAH', lp: 'P' },
+          { nisn: '242510271', nama: 'NADINE PUTRI RAMADANI', lp: 'P' },
+          { nisn: '242510273', nama: 'NASYA AULIA RAMADHANI', lp: 'P' },
+          { nisn: '242510284', nama: 'NAZWA AZZAHRO', lp: 'P' },
+          { nisn: '242510308', nama: 'PUJA KIRANA', lp: 'P' },
+          { nisn: '242510323', nama: 'RAISYA LUTFIANI SAFARIAH', lp: 'P' },
+          { nisn: '242510340', nama: 'REYHAN PERMANA PUTRA', lp: 'L' },
+          { nisn: '242510350', nama: 'RIFDAH NUR TAUFIQOH', lp: 'P' },
+          { nisn: '242510362', nama: 'RIZKI RAMDANI', lp: 'L' },
+          { nisn: '242510366', nama: 'RIZKY SYAPUTRA RAMADAN', lp: 'L' },
+          { nisn: '242510385', nama: 'SENI LESTARI', lp: 'P' },
+          { nisn: '242510392', nama: 'SITI DINI MAESAROH', lp: 'P' },
+          { nisn: '242510409', nama: 'SYAQILA', lp: 'P' },
+          { nisn: '242510413', nama: 'SYSI ROSLIANI', lp: 'P' },
+          { nisn: '242510415', nama: 'TANIA NURCAHYANI', lp: 'P' },
+          { nisn: '242510421', nama: 'TRI AJENG MULYANI', lp: 'P' },
+          { nisn: '242510432', nama: 'WANTI WIDIYANTI', lp: 'P' },
+          { nisn: '242510433', nama: 'WIDI SETIAWAN', lp: 'L' }
+        ]
+      },
+      'XII.7': {
+        waliKelas: 'Tika Nurhayati, S.Pd',
+        nipWali: 'NIP 197309192014092001',
+        rekap: { l: 13, p: 23, total: 36 },
+        siswa: [
+          { nisn: '242510028', nama: 'ALMA MELLANI RAHMAISHA', lp: 'P' },
+          { nisn: '242510051', nama: 'ARYA SAPUTRA', lp: 'L' },
+          { nisn: '242510078', nama: 'DAFA ZAN NURY ALPAN', lp: 'L' },
+          { nisn: '242510090', nama: 'DESY RATNA SUMINAR', lp: 'P' },
+          { nisn: '242510091', nama: 'DEVI SITI NURAENI', lp: 'P' },
+          { nisn: '242510104', nama: 'DIMAS TRI ANDIKA', lp: 'L' },
+          { nisn: '242510129', nama: 'FELITA AWALIYAH', lp: 'P' },
+          { nisn: '242510132', nama: 'FIRLY MAULANA', lp: 'L' },
+          { nisn: '242510133', nama: 'FITRI KRISNAYA', lp: 'P' },
+          { nisn: '242510142', nama: 'HANI NURJAJILAH', lp: 'P' },
+          { nisn: '242510146', nama: 'HELEN GARDENIA SETIAWAN', lp: 'P' },
+          { nisn: '242510159', nama: 'JEAN ILMA SIN', lp: 'P' },
+          { nisn: '242510206', nama: 'MELANI PUTRI', lp: 'P' },
+          { nisn: '242510217', nama: 'MONICA ADYA DWINATARINA', lp: 'P' },
+          { nisn: '242510228', nama: 'MUHAMAD HAIKAL', lp: 'L' },
+          { nisn: '242510235', nama: 'MUHAMAD TSABIT ALBANANI', lp: 'L' },
+          { nisn: '242510238', nama: 'MUHAMMAD EBO', lp: 'L' },
+          { nisn: '242510226', nama: 'MUHAMMAD FIKRI APRILIANSYAH', lp: 'L' },
+          { nisn: '242510269', nama: 'NADIA NURAENI', lp: 'P' },
+          { nisn: '242510289', nama: 'NENG IMAS SITI MEYLANI', lp: 'P' },
+          { nisn: '242510293', nama: 'NESA SILMAULIDA', lp: 'P' },
+          { nisn: '242510304', nama: 'PAZHA NABILA ASFARUNNISA', lp: 'P' },
+          { nisn: '242510306', nama: 'PRISKA BUNGA DWIYANTO', lp: 'P' },
+          { nisn: '242510325', nama: 'RAKA JATI BARUNA', lp: 'L' },
+          { nisn: '242510335', nama: 'REIFA SALSA ANRIZKI', lp: 'P' },
+          { nisn: '242510347', nama: 'RIFA APRILIA', lp: 'P' },
+          { nisn: '242510359', nama: 'RIVA KUROTUL AENI', lp: 'P' },
+          { nisn: '242510383', nama: 'SANDRA CLAUDYA WAHYUNI', lp: 'P' },
+          { nisn: '242510397', nama: 'SITI NURLATIPAH', lp: 'P' },
+          { nisn: '242510402', nama: 'SUCITA NUR ALIA HERMAWAN', lp: 'P' },
+          { nisn: '242510405', nama: 'SYAIFUL AKHYAR', lp: 'L' },
+          { nisn: '242510416', nama: 'TEDI NURCAHYADI', lp: 'L' },
+          { nisn: '242510420', nama: 'TIARA FANESA', lp: 'P' },
+          { nisn: '242510424', nama: 'TRIGY MUHAMMAD JULIANSYAH', lp: 'L' },
+          { nisn: '242510431', nama: 'WAFA LUTHFIANA', lp: 'P' },
+          { nisn: '242510438', nama: 'ZAHRA AYUSHITA DEWI', lp: 'P' }
+        ]
+      },
+      'XII.8': {
+        waliKelas: 'Mirwanda, S.Pd',
+        nipWali: 'NIP 199410092020122016',
+        rekap: { l: 12, p: 24, total: 36 },
+        siswa: [
+          { nisn: '242510005', nama: 'ADINDA APRILIA', lp: 'P' },
+          { nisn: '242510021', nama: 'ALGIN LUGIANA PUTRI', lp: 'P' },
+          { nisn: '242510027', nama: 'ALIYA NUR AFIFAH', lp: 'P' },
+          { nisn: '242510048', nama: 'ARINI KHAIFATUL MARYAM', lp: 'P' },
+          { nisn: '242510050', nama: 'ARY RELLA TAWISNA TUMAMPI', lp: 'P' },
+          { nisn: '242510055', nama: 'AULIA RAMADANI', lp: 'P' },
+          { nisn: '242510066', nama: 'BILQIS SANIAH LATIFAH', lp: 'P' },
+          { nisn: '242510097', nama: 'DIANA FATHMA YULIA HIDAYAT', lp: 'P' },
+          { nisn: '242510102', nama: 'DIMAS REHAN NOVA', lp: 'L' },
+          { nisn: '242510131', nama: 'FIRDA RAHMA MAULIDA', lp: 'P' },
+          { nisn: '242510145', nama: 'HAZNA JAUZA ALIFAH', lp: 'P' },
+          { nisn: '242510162', nama: 'JULIAN WIGUNA', lp: 'L' },
+          { nisn: '242510059', nama: 'M. ALVIN RIFANSYAH', lp: 'L' },
+          { nisn: '242510191', nama: 'M. FAUZI BOWO', lp: 'L' },
+          { nisn: '242510198', nama: 'MAISYA SOFIA NINGSIH', lp: 'P' },
+          { nisn: '242510220', nama: 'MUHAMAD DWI ANDIKA YUDISTIRA', lp: 'L' },
+          { nisn: '242510257', nama: 'MUHAMMAD SOFYAN NUR ALIF', lp: 'L' },
+          { nisn: '242510277', nama: 'NAUFAL ARRAZZAQ ADITYA EKA PERMANA', lp: 'L' },
+          { nisn: '242510298', nama: 'NURYAH SIFA ALIYAH', lp: 'P' },
+          { nisn: '242510317', nama: 'RAHMA RIZGI NOER SABILA', lp: 'P' },
+          { nisn: '242510322', nama: 'RAISA PUTRI NAFISA', lp: 'P' },
+          { nisn: '242510339', nama: 'REVA AISYAH PUTRI RIDWAN', lp: 'P' },
+          { nisn: '242510344', nama: 'RIAN', lp: 'L' },
+          { nisn: '242510346', nama: 'RIDHO DWI TRIYANA', lp: 'L' },
+          { nisn: '242510349', nama: 'RIFA SITI SARIPAH', lp: 'P' },
+          { nisn: '242510357', nama: 'RISMA NOVIANTI NURPALAH', lp: 'P' },
+          { nisn: '242510360', nama: 'RIVALDO PUTRA MAYHENDRA', lp: 'L' },
+          { nisn: '242510367', nama: 'ROMI BARKAH', lp: 'L' },
+          { nisn: '242510371', nama: 'SABRINA ALTHAFUNNISA ALAWIAH', lp: 'P' },
+          { nisn: '242510388', nama: 'SHILVA KASNIA BUDILANDARI', lp: 'P' },
+          { nisn: '252611584', nama: 'SITI AISYAH', lp: 'P' },
+          { nisn: '242510394', nama: 'SITI HAMIDAH', lp: 'P' },
+          { nisn: '242510398', nama: 'SOFI NURCAHYANI', lp: 'P' },
+          { nisn: '242510407', nama: 'SYAKIRA RIZKIA ROBIUL AWWALIAH', lp: 'P' },
+          { nisn: '242510417', nama: 'TIAN YULIANA', lp: 'P' },
+          { nisn: '242510425', nama: 'UMAR WIJAYAKUSUMA', lp: 'L' }
+        ]
+      }
+    };
 
     // State Aplikasi
     const state = {
@@ -2154,6 +2519,102 @@
     document.getElementById('btn-refresh').addEventListener('click', () => {
       showToast('Menyinkronkan data terbaru...', 'info');
       loadInitialData();
+    });
+
+    /* ==================== MUAT MASTER KELAS (XII.4 - XII.8) & DAFTAR SISWA ==================== */
+
+    function loadClassIntoBatch(kelasKey) {
+      const info = MASTER_KELAS_DATA[kelasKey];
+      if (!info) {
+        showToast('Pilih kelas (XII.4 – XII.8) terlebih dahulu.', 'error');
+        return;
+      }
+      document.getElementById('batch-kelas').value = kelasKey;
+      const tbody = document.getElementById('batch-rows-body');
+      tbody.innerHTML = '';
+      info.siswa.forEach((s) => {
+        appendBatchRow({ nisn: s.nisn, nama: s.nama });
+      });
+      showToast(`${info.siswa.length} siswa kelas ${kelasKey} berhasil dimuat!`, 'success');
+    }
+
+    document.getElementById('btn-load-preset-kelas').addEventListener('click', () => {
+      const selected = document.getElementById('batch-preset-kelas').value;
+      loadClassIntoBatch(selected);
+    });
+
+    function renderRosterSheet(kelasKey) {
+      const info = MASTER_KELAS_DATA[kelasKey] || MASTER_KELAS_DATA['XII.4'];
+      const activeKelas = MASTER_KELAS_DATA[kelasKey] ? kelasKey : 'XII.4';
+      document.getElementById('roster-kelas-select').value = activeKelas;
+      document.getElementById('roster-box-kelas').textContent = activeKelas;
+      document.getElementById('roster-count-l').textContent = `Laki-laki : ${info.rekap.l}`;
+      document.getElementById('roster-count-p').textContent = `Perempuan : ${info.rekap.p}`;
+      document.getElementById('roster-count-total').textContent = `Jumlah : ${info.rekap.total}`;
+      document.getElementById('roster-wali-nama').textContent = info.waliKelas;
+      document.getElementById('roster-wali-nip').textContent = info.nipWali;
+
+      const emptyCells = Array(16).fill('<td class="border border-slate-800"></td>').join('');
+      document.getElementById('roster-table-body').innerHTML = info.siswa
+        .map(
+          (s, idx) => `
+            <tr class="hover:bg-slate-50">
+              <td class="border border-slate-800 px-1.5 py-0.5 text-center">${idx + 1}</td>
+              <td class="border border-slate-800 px-2 py-0.5 text-center font-mono">${escapeHtml(s.nisn)}</td>
+              <td class="border border-slate-800 px-2 py-0.5 font-medium">${escapeHtml(s.nama)}</td>
+              <td class="border border-slate-800 px-1.5 py-0.5 text-center">${escapeHtml(s.lp)}</td>
+              ${emptyCells}
+            </tr>
+          `
+        )
+        .join('');
+    }
+
+    document.getElementById('btn-open-roster').addEventListener('click', () => {
+      renderRosterSheet('XII.4');
+      openModal('modal-roster');
+    });
+
+    document.getElementById('roster-kelas-select').addEventListener('change', (e) => {
+      renderRosterSheet(e.target.value);
+    });
+
+    document.getElementById('btn-use-roster-for-batch').addEventListener('click', () => {
+      const kelasKey = document.getElementById('roster-kelas-select').value;
+      closeModal('modal-roster');
+      resetBatchModal();
+      document.getElementById('batch-preset-kelas').value = kelasKey;
+      loadClassIntoBatch(kelasKey);
+      openModal('modal-batch-nilai');
+    });
+
+    document.getElementById('btn-print-roster').addEventListener('click', () => {
+      const content = document.getElementById('roster-printable-area').innerHTML;
+      const printWin = window.open('', '_blank', 'width=900,height=1100');
+      if (!printWin) {
+        showToast('Izinkan pop-up browser untuk mencetak daftar siswa.', 'error');
+        return;
+      }
+      printWin.document.write(`
+        <!DOCTYPE html>
+        <html lang="id">
+        <head>
+          <meta charset="UTF-8" />
+          <title>Daftar Nama Siswa - SMA Negeri 13 Garut</title>
+          <script src="https://cdn.tailwindcss.com"><\/script>
+          <style>
+            @page { size: A4 portrait; margin: 10mm; }
+            body { font-family: 'Times New Roman', serif; color: #000; background: #fff; }
+          </style>
+        </head>
+        <body class="p-2">${content}</body>
+        </html>
+      `);
+      printWin.document.close();
+      setTimeout(() => {
+        printWin.focus();
+        printWin.print();
+      }, 600);
     });
 
     // Muat data otomatis saat halaman dibuka
